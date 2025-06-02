@@ -2,7 +2,6 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Liste des articles</title>
     <style>
         /* Variables Light Mode */
         :root {
@@ -210,34 +209,41 @@
     </style>
 </head>
 <body>
-
+{% load i18n %}
 <header>
-    <!-- Titre du site -->
-    <div class="site-title">Blog Django</div>
+    <div class="site-title">{% trans "Blog Django" %}</div>
 
-    <!-- Navigation -->
     <nav>
         <ul>
-            <li><a href="/">Accueil</a></li>
-            <li><a href="/articles">Articles</a></li>
-            <li><a href="/contact">Contact</a></li>
-            <li><a href="/about">À propos</a></li>
+            <li><a href="/">{% trans "Accueil" %}</a></li>
+            <li><a href="/articles">{% trans "Articles" %}</a></li>
+            <li><a href="/contact">{% trans "Contact" %}</a></li>
+            <li><a href="/about">{% trans "À propos" %}</a></li>
         </ul>
     </nav>
 
-    <!-- Actions -->
     <div class="actions">
         <button id="modeToggle">🌙</button>
+        {% get_current_language as LANGUAGE_CODE %}
+        <form action="{% url 'set_language' %}" method="post">
+            {% csrf_token %}
+            <input name="next" type="hidden" value="{{ request.path }}">
+            <select name="language" onchange="this.form.submit()">
+                <option value="fr" {% if LANGUAGE_CODE == 'fr' %}selected{% endif %}>Français</option>
+                <option value="en" {% if LANGUAGE_CODE == 'en' %}selected{% endif %}>English</option>
+            </select>
+        </form>
 
         {% if user.is_authenticated %}
-        <span>Bonjour {{ user.username }} !</span>
-        <a href="{% url 'logout' %}">Déconnexion</a>
+        <span>{% blocktrans %}Bonjour {{ user.username }} !{% endblocktrans %}</span>
+        <a href="{% url 'logout' %}">{% trans "Déconnexion" %}</a>
         {% else %}
-        <a href="{% url 'login' %}" class="login-btn">Connexion</a>
-        {% endif %}    </div>
+        <a href="{% url 'login' %}" class="login-btn">{% trans "Connexion" %}</a>
+        {% endif %}
+    </div>
 </header>
 
-<h1>Liste des articles</h1>
+<h1>{% trans "Liste des articles" %}</h1>
 
 {% for article in articles %}
 <div class="article">
@@ -258,9 +264,6 @@
 {% empty %}
 <p>Aucun article disponible.</p>
 {% endfor %}
-
-<a href="{% url 'home' %}" class="back-link">← Retour à l'accueil</a>
-
 <script>
     const modeToggle = document.getElementById('modeToggle');
     const body = document.body;

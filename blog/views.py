@@ -6,10 +6,9 @@ from .forms import ArticleForm
 from django.utils.translation import gettext as _
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
+from django.utils.translation import gettext as _
 
 def home(request):
-    message = _("Hello, world!")
-    print(message)
     categorie_id = request.GET.get('categorie')  # Récupère la catégorie choisie dans l'URL
     categories = Categorie.objects.all()  # Toutes les catégories pour le select
 
