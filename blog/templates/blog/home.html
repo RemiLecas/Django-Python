@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Liste des articles</title>
+    <style>
+        /* Variables Light Mode */
+        :root {
+            --bg-color: #f9f9f9;
+            --text-color: #333;
+            --link-color: #007cba;
+            --article-bg: white;
+            --shadow-color: rgba(0,0,0,0.1);
+            --btn-bg: #007cba;
+            --btn-color: white;
+            --btn-hover-bg: #005f8a;
+            --danger-bg: #dc3545;
+            --danger-hover-bg: #c82333;
+        }
+
+        /* Variables Dark Mode */
+        body.dark {
+            --bg-color: #121212;
+            --text-color: #ddd;
+            --link-color: #1e90ff;
+            --article-bg: #1e1e1e;
+            --shadow-color: rgba(0,0,0,0.7);
+            --btn-bg: #1e90ff;
+            --btn-color: white;
+            --btn-hover-bg: #005f8a;
+            --danger-bg: #ff4c4c;
+            --danger-hover-bg: #c82333;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0 auto;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        /* Header */
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px 30px;
+            background-color: var(--article-bg);
+            box-shadow: 0 2px 6px var(--shadow-color);
+        }
+        header .site-title {
+            font-weight: bold;
+            font-size: 1.5rem;
+            color: var(--link-color);
+        }
+        header nav ul {
+            display: flex;
+            gap: 20px;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+        header nav ul li a {
+            color: var(--text-color);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+        header nav ul li a:hover {
+            color: var(--link-color);
+        }
+        header .actions {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        /* Bouton Dark Mode */
+        #modeToggle {
+            background-color: var(--btn-bg);
+            color: var(--btn-color);
+            border: none;
+            padding: 8px 15px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+            box-shadow: 0 2px 8px var(--shadow-color);
+        }
+        #modeToggle:hover {
+            background-color: var(--btn-hover-bg);
+        }
+
+        /* Bouton Connexion */
+        a.login-btn {
+            padding: 8px 15px;
+            border-radius: 25px;
+            border: 2px solid var(--link-color);
+            color: var(--link-color);
+            font-weight: bold;
+            text-decoration: none;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        a.login-btn:hover {
+            background-color: var(--link-color);
+            color: white;
+            text-decoration: none;
+        }
+
+        /* Styles articles (inchangés) */
+        h1 {
+            color: var(--text-color);
+            margin-bottom: 30px;
+        }
+
+        .article {
+            background: var(--article-bg);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 8px var(--shadow-color);
+            transition: box-shadow 0.3s ease, background-color 0.3s ease;
+        }
+        .article:hover {
+            box-shadow: 0 4px 12px var(--shadow-color);
+        }
+
+        .article img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 8px var(--shadow-color);
+            background-color: var(--article-bg);
+            transition: background-color 0.3s ease;
+        }
+
+        .article h2 {
+            margin-top: 0;
+            color: var(--link-color);
+            margin-bottom: 10px;
+        }
+
+        .article p.excerpt {
+            color: var(--text-color);
+            line-height: 1.5;
+            margin-bottom: 15px;
+        }
+
+        .categories span {
+            background-color: var(--link-color);
+            color: white;
+            padding: 5px 12px;
+            margin-right: 6px;
+            border-radius: 5px;
+            font-size: 0.85em;
+            display: inline-block;
+        }
+
+        .actions a,
+        .actions form {
+            display: inline-block;
+            margin-right: 10px;
+            margin-top: 10px;
+        }
+
+        .actions a {
+            color: var(--link-color);
+            font-weight: bold;
+            text-decoration: none;
+            padding: 8px 15px;
+            border: 2px solid var(--link-color);
+            border-radius: 5px;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .actions a:hover {
+            background-color: var(--link-color);
+            color: white;
+            text-decoration: none;
+        }
+
+        .actions button {
+            background-color: var(--danger-bg);
+            color: white;
+            padding: 8px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+        }
+
+        .actions button:hover {
+            background-color: var(--danger-hover-bg);
+        }
+
+        a.back-link {
+            display: inline-block;
+            margin-top: 40px;
+            color: var(--link-color);
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        a.back-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <!-- Titre du site -->
+    <div class="site-title">Blog Django</div>
+
+    <!-- Navigation -->
+    <nav>
+        <ul>
+            <li><a href="/">Accueil</a></li>
+            <li><a href="/articles">Articles</a></li>
+            <li><a href="/contact">Contact</a></li>
+            <li><a href="/about">À propos</a></li>
+        </ul>
+    </nav>
+
+    <!-- Actions -->
+    <div class="actions">
+        <button id="modeToggle">🌙</button>
+
+        {% if user.is_authenticated %}
+        <span>Bonjour {{ user.username }} !</span>
+        <a href="{% url 'logout' %}">Déconnexion</a>
+        {% else %}
+        <a href="{% url 'login' %}" class="login-btn">Connexion</a>
+        {% endif %}    </div>
+</header>
+
+<h1>Liste des articles</h1>
+
+{% for article in articles %}
+<div class="article">
+    {% if article.image %}
+    <img src="{{ article.image.url }}" alt="Image de {{ article.titre }}" style="width: 300px">
+    {% endif %}
+    <h2><a href="{% url 'details_article' article.id %}">{{ article.titre }}</a></h2>
+    <p class="excerpt">{{ article.contenu|truncatechars:150 }}</p>
+
+    <div class="categories">
+        {% for categorie in article.categories.all %}
+        <span>{{ categorie.nom }}</span>
+        {% empty %}
+        <span>Aucune catégorie</span>
+        {% endfor %}
+    </div>
+</div>
+{% empty %}
+<p>Aucun article disponible.</p>
+{% endfor %}
+
+<a href="{% url 'home' %}" class="back-link">← Retour à l'accueil</a>
+
+<script>
+    const modeToggle = document.getElementById('modeToggle');
+    const body = document.body;
+
+    // Charger le mode enregistré
+    const savedMode = localStorage.getItem('mode');
+    if (savedMode === 'dark') {
+        body.classList.add('dark');
+        modeToggle.textContent = '☀️';
+    }
+
+    modeToggle.addEventListener('click', () => {
+        body.classList.toggle('dark');
+        if (body.classList.contains('dark')) {
+            modeToggle.textContent = '☀️';
+            localStorage.setItem('mode', 'dark');
+        } else {
+            modeToggle.textContent = '🌙';
+            localStorage.setItem('mode', 'light');
+        }
+    });
+</script>
+
+</body>
+</html>
