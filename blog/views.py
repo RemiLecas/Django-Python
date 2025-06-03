@@ -2,7 +2,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpResponseForbidden
 from django.contrib import messages
-from .models import Article, Categorie
+from .models import Article, Categorie, Commentaire
 from .forms import ArticleForm, CustomUserCreationForm
 from django.utils.translation import gettext as _
 from django.contrib.auth import authenticate, login, logout
@@ -72,17 +72,28 @@ def ajouter_article(request):
 def details_article(request, id):
     try:
         article = Article.objects.get(pk=id)
-        session_key = f'viewed_article_{article.id}'
+        commentaires = article.commentaires.all()
 
     except Article.DoesNotExist:
             messages.error(request, "L'article demandé n'existe pas.")
             return redirect('home')
 
+    if request.method == 'POST':
+        if not request.user.is_authenticated:
+            return redirect('login')
+        contenu = request.POST.get('contenu')
+        if contenu:
+            Commentaire.objects.create(article=article, auteur=request.user, contenu=contenu)
+            return redirect('details_article', id=article.id)
+
     article.vues += 1
     article.save(update_fields=['vues'])
     messages.info(request, f"Vous consultez l'article : {article.titre}")
-    return render(request, 'blog/details_article.html', {'article': article})
 
+    return render(request, 'blog/details_article.html', {
+        'article': article,
+        'commentaires': commentaires,
+    })
 def supprimer_article(request, article_id):
     article = Article.objects.get(pk=article_id)
     article.delete()
@@ -142,18 +153,6 @@ def dashboard_view(request):
         'brouillons': brouillons
     })
 
-@login_required
-def publier_article(request, article_id):
-    article = Article.objects.get(pk=article_id)
-    if request.user == article.auteur or request.user.is_admin:
-        article.statut = 'published'
-        article.save()
-        messages.success(request, "Article publié avec succès !")
-    else:
-        messages.error(request, "Vous n'avez pas la permission de publier cet article.")
-    return redirect('details_article', id=article_id)
-
-
 @login_required()
 def publier_article(request, article_id):
     article = Article.objects.get(pk=article_id)
@@ -161,3 +160,17 @@ def publier_article(request, article_id):
     article.save()
     messages.success(request, f"L'article '{article.titre}' a été publié.")
     return redirect('dashboard')
+
+@login_required()
+def supprimer_commentaire(request, commentaire_id):
+    commentaire = Commentaire.objects.get(id=commentaire_id)
+    article = commentaire.article
+
+    if request.user != article.auteur and not request.user.is_admin:
+        return HttpResponseForbidden("Vous n'êtes pas autorisé à supprimer ce commentaire.")
+
+    if request.method == "POST":
+        commentaire.delete()
+        return redirect(article.get_absolute_url())
+
+    return redirect(article.get_absolute_url())

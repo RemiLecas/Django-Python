@@ -71,7 +71,7 @@ class Article(models.Model):
     contenu = models.TextField()
     extrait = models.TextField(blank=True)
     auteur = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
-    categories = models.ForeignKey(Categorie, on_delete=models.SET_NULL, null=True, related_name='articles')
+    categories = models.ManyToManyField(Categorie, related_name='articles', blank=True)
     tags = models.ManyToManyField(Tag, blank=True, related_name='articles')
     statut = models.CharField(max_length=10, choices=STATUT_CHOICES, default='draft')
     image = models.ImageField(upload_to='articles/images/', blank=True, null=True)
@@ -99,3 +99,14 @@ class Article(models.Model):
         super().save(*args, **kwargs)
 
 
+class Commentaire(models.Model):
+    article = models.ForeignKey(Article, on_delete=models.CASCADE, related_name='commentaires')
+    auteur = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    contenu = models.TextField()
+    date_creation = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-date_creation']
+
+    def __str__(self):
+        return f'Commentaire de {self.auteur} sur {self.article}'

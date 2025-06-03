@@ -11,7 +11,7 @@ class ArticleForm(forms.ModelForm):
             'titre': forms.TextInput(attrs={'placeholder': "Titre de l'article"}),
             'contenu': forms.Textarea(attrs={'rows':5, 'placeholder': 'Contenu'}),
             'extrait': forms.Textarea(attrs={'rows':2, 'placeholder': 'Extrait (facultatif)'}),
-            'categories': forms.Select(attrs={'class': 'form-select'}),
+            'categories': forms.CheckboxSelectMultiple(),
             'tags': forms.SelectMultiple(attrs={'size': 5}),
         }
 

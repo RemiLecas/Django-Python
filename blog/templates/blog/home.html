@@ -18,8 +18,7 @@
 <div class="search-container">
     <form method="GET" action="{% url 'home' %}" class="search-form">
         <div class="search-wrapper">
-            <input type="text" name="search" value="{{ search_query|default:'' }}"
-                   placeholder="Rechercher par titre ou auteur..." class="search-input">
+            <input type="text" name="q" value="{{ query|default:'' }}" placeholder="Rechercher par titre ou auteur..." class="search-input">
             <button type="submit" class="search-button">
                 🔍 Rechercher
             </button>

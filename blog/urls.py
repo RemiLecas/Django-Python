@@ -17,7 +17,7 @@ urlpatterns = [
     path('logout/', views.logout_view, name='logout'),
     path('dashboard/', views.dashboard_view, name='dashboard'),
     path('dashboard/publier/<int:article_id>/', views.publier_article, name='publier_article'),
-
+    path('commentaire/<int:commentaire_id>/supprimer/', views.supprimer_commentaire, name='supprimer_commentaire'),
 ]
 
 if settings.DEBUG:
