@@ -6,12 +6,13 @@ from django.contrib.auth.forms import UserCreationForm
 class ArticleForm(forms.ModelForm):
     class Meta:
         model = Article
-        fields = ['titre', 'contenu', 'commentaire', 'categories', 'image']
+        fields = ['titre', 'contenu', 'extrait', 'categories', 'tags', 'image']
         widgets = {
             'titre': forms.TextInput(attrs={'placeholder': "Titre de l'article"}),
             'contenu': forms.Textarea(attrs={'rows':5, 'placeholder': 'Contenu'}),
-            'commentaire': forms.TextInput(attrs={'placeholder': 'Commentaire'}),
-            'categories': forms.SelectMultiple(attrs={'size': 5}),
+            'extrait': forms.Textarea(attrs={'rows':2, 'placeholder': 'Extrait (facultatif)'}),
+            'categories': forms.Select(attrs={'class': 'form-select'}),
+            'tags': forms.SelectMultiple(attrs={'size': 5}),
         }
 
 

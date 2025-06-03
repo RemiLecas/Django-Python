@@ -9,6 +9,11 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import AuthenticationForm
 from django.utils.translation import gettext as _
 from django.db.models import Q
+from django.urls import reverse
+from django.utils.text import slugify
+from django.db.models import Count
+from django.db import models
+
 import logging
 logger = logging.getLogger(__name__)
 from functools import wraps
@@ -74,11 +79,6 @@ def details_article(request, id):
     messages.info(request, f"Vous consultez l'article : {article.titre}")
     return render(request, 'blog/details_article.html', {'article': article})
 
-
-
-
-
-@role_required(['author', 'admin'])
 def supprimer_article(request, article_id):
     article = Article.objects.get(pk=article_id)
     article.delete()
@@ -87,18 +87,15 @@ def supprimer_article(request, article_id):
 def modifier_article(request, article_id):
     article = Article.objects.get(pk=article_id)
 
-    if (request.user.role in ['author', 'editor', 'admin'] and request.user == article.auteur) or request.user.role in ['editor', 'admin']:
-        if request.method == 'POST':
-            form = ArticleForm(request.POST, request.FILES, instance=article)
-            if form.is_valid():
-                form.save()
-                return redirect('details_article', id=article.id)
-        else:
-            form = ArticleForm(instance=article)
-
-        return render(request, 'blog/modifier_article.html', {'form': form, 'article': article})
+    if request.method == 'POST':
+        form = ArticleForm(request.POST, request.FILES, instance=article)
+        if form.is_valid():
+            form.save()
+            return redirect('details_article', id=article.id)
     else:
-        return HttpResponseForbidden("Accès refusé.")
+        form = ArticleForm(instance=article)
+
+    return render(request, 'blog/modifier_article.html', {'form': form, 'article': article})
 
 def login_view(request):
     if request.method == 'POST':
@@ -134,6 +131,29 @@ def logout_view(request):
 
 @login_required
 def dashboard_view(request):
+    brouillons = Article.objects.filter(auteur=request.user, statut='draft').order_by('-date_creation')
+
     return render(request, 'blog/dashboard.html', {
         'user': request.user,
+        'brouillons': brouillons
     })
+
+@login_required
+def publier_article(request, article_id):
+    article = Article.objects.get(pk=article_id)
+    if request.user == article.auteur or request.user.is_admin:
+        article.statut = 'published'
+        article.save()
+        messages.success(request, "Article publié avec succès !")
+    else:
+        messages.error(request, "Vous n'avez pas la permission de publier cet article.")
+    return redirect('details_article', id=article_id)
+
+
+@login_required()
+def publier_article(request, article_id):
+    article = Article.objects.get(pk=article_id)
+    article.statut = 'published'
+    article.save()
+    messages.success(request, f"L'article '{article.titre}' a été publié.")
+    return redirect('dashboard')

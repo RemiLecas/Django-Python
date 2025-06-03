@@ -16,6 +16,8 @@ urlpatterns = [
     path('register/', views.register_view, name='register'),
     path('logout/', views.logout_view, name='logout'),
     path('dashboard/', views.dashboard_view, name='dashboard'),
+    path('dashboard/publier/<int:article_id>/', views.publier_article, name='publier_article'),
+
 ]
 
 if settings.DEBUG:

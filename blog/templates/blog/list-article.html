@@ -1,5 +1,6 @@
 <div class="articles-container">
   {% for article in articles %}
+  {% if article.statut == "published" %}
   <a href="{% url 'details_article' article.id %}" class="card-link" tabindex="0">
     <div class="card">
       {% if article.image %}
@@ -29,6 +30,8 @@
       </div>
     </div>
   </a>
+
+  {% endif %}
   {% empty %}
   <p>Aucun article disponible.</p>
   {% endfor %}

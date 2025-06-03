@@ -13,6 +13,31 @@
         <button type="submit">Créer un article</button>
     </form>
 
+    {% if brouillons %}
+    <ul>
+        {% for article in brouillons %}
+        <li>
+            {{ article.titre }}
+            <a href="{% url 'publier_article' article.id %}"
+               onclick="return confirm('Voulez-vous vraiment publier cet article ?');">
+                Publier
+            </a>
+            |
+            <a href="{% url 'modifier_article' article.id %}">
+                Modifier
+            </a>
+            |
+            <a href="{% url 'supprimer_article' article.id %}"
+               onclick="return confirm('Voulez-vous vraiment supprimer cet article ?');">
+                Supprimer
+            </a>
+        </li>
+        {% endfor %}
+    </ul>
+    {% else %}
+    <p>Vous n'avez aucun brouillon.</p>
+    {% endif %}
+
     {% endblock %}
 
 </body>
