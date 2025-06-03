@@ -1,17 +1,19 @@
+{% load i18n %}
+
 <div class="articles-container">
   {% for article in articles %}
   {% if article.statut == "published" %}
   <a href="{% url 'details_article' article.id %}" class="card-link" tabindex="0">
     <div class="card">
       {% if article.image %}
-      <img src="{{ article.image.url }}" alt="Image de {{ article.titre }}" class="card-image">
+      <img src="{{ article.image.url }}" alt="{% blocktrans %}Image de {{ article.titre }}{% endblocktrans %}" class="card-image">
       {% endif %}
 
       <div class="card-content">
         <div class="card-meta">
           <span class="author">👤 {{ article.auteur.username }}</span>
-          <span class="date">📅 {{ article.date_creation }}</span>
-          <span class="views">👁 {{ article.vues }} vues</span>
+          <span class="date">📅 {{ article.date_creation|date:"d M Y" }}</span>
+          <span class="views">👁 {% blocktrans count count=article.vues %}{{ count }} vue{% plural %}{{ count }} vues{% endblocktrans %}</span>
         </div>
 
         <h2 class="card-title">{{ article.titre }}</h2>
@@ -21,19 +23,17 @@
           {% for categorie in article.categories.all %}
           <span class="tag">{{ categorie.nom }}</span>
           {% endfor %}
-
         </div>
 
         <div class="card-footer">
           <span class="likes">❤️ {{ article.likes.count }}</span>
-          <span class="comments">💬 {{ article.commentaires.count }} commentaires</span>
+          <span class="comments">💬 {% blocktrans count count=article.commentaires.count %}{{ count }} commentaire{% plural %}{{ count }} commentaires{% endblocktrans %}</span>
         </div>
       </div>
     </div>
   </a>
-
   {% endif %}
   {% empty %}
-  <p>Aucun article disponible.</p>
+  <p>{% trans "Aucun article disponible." %}</p>
   {% endfor %}
 </div>

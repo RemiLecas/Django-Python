@@ -1,45 +1,49 @@
+{% load i18n %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ LANGUAGE_CODE }}">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>{% trans "Tableau de bord" %}</title>
 </head>
 <body>
-    {% block content %}
-    <h1>Bienvenue sur ton dashboard, {{ user.username }} !</h1>
-    <p>Contenu de ton dashboard ici.</p>
+{% block content %}
+<h1>
+    {% blocktrans with username=user.username %}
+    Bienvenue sur ton dashboard, {{ username }} !
+    {% endblocktrans %}
+</h1>
+<p>{% trans "Contenu de ton dashboard ici." %}</p>
 
-    <form action="{% url 'ajouter_article' %}" method="get" style="display:inline;">
-        <button type="submit">Créer un article</button>
-    </form>
+<form action="{% url 'ajouter_article' %}" method="get" style="display:inline;">
+    <button type="submit">{% trans "Créer un article" %}</button>
+</form>
 
-    {% if brouillons %}
-    <ul>
-        {% for article in brouillons %}
-        <li>
-            {{ article.titre }}
-            <a href="{% url 'publier_article' article.id %}"
-               onclick="return confirm('Voulez-vous vraiment publier cet article ?');">
-                Publier
-            </a>
-            |
-            <a href="{% url 'modifier_article' article.id %}">
-                Modifier
-            </a>
-            |
-            <a href="{% url 'supprimer_article' article.id %}"
-               onclick="return confirm('Voulez-vous vraiment supprimer cet article ?');">
-                Supprimer
-            </a>
-        </li>
-        {% endfor %}
-    </ul>
-    {% else %}
-    <p>Vous n'avez aucun brouillon.</p>
-    {% endif %}
+{% if brouillons %}
+<ul>
+    {% for article in brouillons %}
+    <li>
+        {{ article.titre }}
+        <a href="{% url 'publier_article' article.id %}"
+           onclick="return confirm('{% trans "Voulez-vous vraiment publier cet article ?" %}');">
+        {% trans "Publier" %}
+        </a>
+        |
+        <a href="{% url 'modifier_article' article.id %}">
+            {% trans "Modifier" %}
+        </a>
+        |
+        <a href="{% url 'supprimer_article' article.id %}"
+           onclick="return confirm('{% trans "Voulez-vous vraiment supprimer cet article ?" %}');">
+        {% trans "Supprimer" %}
+        </a>
+    </li>
+    {% endfor %}
+</ul>
+{% else %}
+<p>{% trans "Vous n'avez aucun brouillon." %}</p>
+{% endif %}
+{% endblock %}
 
-    {% endblock %}
-    <a href="{% url 'home' %}" class="back-link">← Retour à l'accueil</a>
-
+<a href="{% url 'home' %}" class="back-link">← {% trans "Retour à l'accueil" %}</a>
 </body>
 </html>

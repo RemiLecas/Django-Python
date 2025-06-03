@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Ajouter un article</title>
+    <title>{% trans "Ajouter un article" %}</title>
     <style>
         body { font-family: Arial, sans-serif; margin: 40px; }
         .form-group { margin: 15px 0; }
@@ -12,36 +12,37 @@
     </style>
 </head>
 <body>
-<h1>Ajouter un Article</h1>
+<div class="container">
+    <h1>{% trans "Ajouter un article" %}</h1>
 
-<form method="post" enctype="multipart/form-data">
-    {% csrf_token %}
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
 
-    <div class="form-group">
-        <label for="{{ form.titre.id_for_label }}">Titre:</label>
-        {{ form.titre }}
-    </div>
+        <div class="form-group">
+            <label for="{{ form.titre.id_for_label }}">{% trans "Titre" %} :</label>
+            {{ form.titre }}
+        </div>
 
-    <div class="form-group">
-        <label for="{{ form.contenu.id_for_label }}">Contenu:</label>
-        {{ form.contenu }}
-    </div>
+        <div class="form-group">
+            <label for="{{ form.contenu.id_for_label }}">{% trans "Contenu" %} :</label>
+            {{ form.contenu }}
+        </div>
 
-    <div class="form-group">
-        <label for="{{ form.categories.id_for_label }}">Catégories :</label>
-        {{ form.categories }}
-    </div>
+        <div class="form-group">
+            <label for="{{ form.categories.id_for_label }}">{% trans "Catégories" %} :</label>
+            {{ form.categories }}
+        </div>
 
-    <div class="form-group">
-        <label for="{{ form.image.id_for_label }}">Image :</label>
-        {{ form.image }}
-    </div>
+        <div class="form-group">
+            <label for="{{ form.image.id_for_label }}">{% trans "Image" %} :</label>
+            {{ form.image }}
+        </div>
 
-    <div class="form-group">
-        <button type="submit" class="btn">Enregistrer</button>
-        <a href="{% url 'home' %}" class="btn btn-secondary">Annuler</a>
-    </div>
-
-</form>
+        <div class="form-group">
+            <button type="submit" class="btn">✅ {% trans "Enregistrer" %}</button>
+            <a href="{% url 'home' %}" class="btn btn-secondary">↩️ {% trans "Annuler" %}</a>
+        </div>
+    </form>
+</div>
 </body>
 </html>

@@ -93,6 +93,7 @@
     </style>
 </head>
 <body>
+{% load i18n %}
 
 <h1>{{ article.titre }}</h1>
 
@@ -102,31 +103,29 @@
 
 <p>{{ article.contenu }}</p>
 
-<p><strong>Publié le :</strong> {{ article.date_creation|date:"d/m/Y à H:i" }}</p>
+<p><strong>{% trans "Publié le :" %}</strong> {{ article.date_creation|date:"d/m/Y à H:i" }}</p>
 
 <div class="categories">
-    <strong>Catégories :</strong>
+    <strong>{% trans "Catégories :" %}</strong>
     {% for categorie in article.categories.all %}
     <span class="tag">{{ categorie.nom }}</span>
     {% endfor %}
-
 </div>
 
 <br>
 
 {% if request.user == article.auteur or request.user.role == 'admin' or request.user.role == 'editor' %}
-<a href="{% url 'modifier_article' article.id %}">✏️ Modifier cet article</a>
-<form method="post" action="{% url 'supprimer_article' article.id %}" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cet article ?');">
-    {% csrf_token %}
-    <button type="submit">🗑️ Supprimer l'article</button>
+<a href="{% url 'modifier_article' article.id %}">✏️ {% trans "Modifier cet article" %}</a>
+<form method="post" action="{% url 'supprimer_article' article.id %}" onsubmit="return confirm('{% trans "Êtes-vous sûr de vouloir supprimer cet article ?" %}');">
+{% csrf_token %}
+<button type="submit">🗑️ {% trans "Supprimer l'article" %}</button>
 </form>
 {% endif %}
 
 <br><br>
-<a href="{% url 'home' %}" class="back-link">← Retour à l'accueil</a>
+<a href="{% url 'home' %}" class="back-link">← {% trans "Retour à l'accueil" %}</a>
 
-
-<h2>Commentaires ({{ commentaires.count }})</h2>
+<h2>{% blocktrans %}Commentaires ({{ commentaires.count }}){% endblocktrans %}</h2>
 
 <div id="commentaires">
     {% for commentaire in article.commentaires.all %}
@@ -136,30 +135,28 @@
 
         {% if request.user.is_authenticated %}
         {% if request.user == article.auteur or request.user.role == 'admin' or request.user.role == 'editor' %}
-        <form method="post" action="{% url 'supprimer_commentaire' commentaire.id %}" style="display:inline;" onsubmit="return confirm('Voulez-vous vraiment supprimer ce commentaire ?');">
-            {% csrf_token %}
-            <button type="submit" style="background:none; border:none; color:#dc3545; cursor:pointer; font-weight:bold;">Supprimer</button>
+        <form method="post" action="{% url 'supprimer_commentaire' commentaire.id %}" style="display:inline;" onsubmit="return confirm('{% trans "Voulez-vous vraiment supprimer ce commentaire ?" %}');">
+        {% csrf_token %}
+        <button type="submit" style="background:none; border:none; color:#dc3545; cursor:pointer; font-weight:bold;">{% trans "Supprimer" %}</button>
         </form>
         {% endif %}
         {% endif %}
     </div>
     {% empty %}
-    <p>Aucun commentaire pour l'instant.</p>
+    <p>{% trans "Aucun commentaire pour l'instant." %}</p>
     {% endfor %}
-
-
 </div>
 
 {% if request.user.is_authenticated %}
-<h3>Ajouter un commentaire</h3>
+<h3>{% trans "Ajouter un commentaire" %}</h3>
 <form method="post" style="margin-top: 20px;">
     {% csrf_token %}
-    <textarea name="contenu" rows="4" style="width: 100%; padding: 10px;" placeholder="Votre commentaire..." required></textarea>
+    <textarea name="contenu" rows="4" style="width: 100%; padding: 10px;" placeholder="{% trans 'Votre commentaire...' %}" required></textarea>
     <br>
-    <button type="submit" style="margin-top: 10px; background-color: #007cba; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;">Envoyer</button>
+    <button type="submit" style="margin-top: 10px; background-color: #007cba; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;">{% trans "Envoyer" %}</button>
 </form>
 {% else %}
-<p><a href="{% url 'login' %}">Connectez-vous</a> pour ajouter un commentaire.</p>
+<p><a href="{% url 'login' %}">{% trans "Connectez-vous" %}</a> {% trans "pour ajouter un commentaire." %}</p>
 {% endif %}
 </body>
 </html>

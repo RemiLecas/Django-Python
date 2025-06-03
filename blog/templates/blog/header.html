@@ -6,32 +6,45 @@
     <nav>
         <ul>
             <li><a href="/">{% trans "Accueil" %}</a></li>
-            <li><a href="/articles">{% trans "Articles" %}</a></li>
-            <li><a href="/contact">{% trans "Contact" %}</a></li>
-            <li><a href="/about">{% trans "À propos" %}</a></li>
         </ul>
     </nav>
 
     <div class="actions">
-        <button id="modeToggle">🌙</button>
+        <button id="modeToggle" title="{% trans 'Changer le thème' %}">🌙</button>
+
         {% get_current_language as LANGUAGE_CODE %}
         <form action="{% url 'set_language' %}" method="post">
             {% csrf_token %}
             <input name="next" type="hidden" value="{{ request.path }}">
             <select name="language" onchange="this.form.submit()">
-                <option value="fr" {% if LANGUAGE_CODE == 'fr' %}selected{% endif %}>Français</option>
-                <option value="en" {% if LANGUAGE_CODE == 'en' %}selected{% endif %}>English</option>
+                <option value="fr" {% if LANGUAGE_CODE == 'fr' %}selected{% endif %}>
+                {% trans "Français" %}
+                </option>
+                <option value="en" {% if LANGUAGE_CODE == 'en' %}selected{% endif %}>
+                {% trans "Anglais" %}
+                </option>
+                <option value="es" {% if LANGUAGE_CODE == 'es' %}selected{% endif %}>
+                {% trans "Espagnol" %}
+                </option>
+                <option value="de" {% if LANGUAGE_CODE == 'de' %}selected{% endif %}>
+                {% trans "Allemand" %}
+                </option>
+                <option value="ja" {% if LANGUAGE_CODE == 'ja' %}selected{% endif %}>
+                {% trans "Japonais" %}
+                </option>
             </select>
         </form>
 
         {% if user.is_authenticated %}
         <span>
-        <a href="{% url 'dashboard' %}">{% blocktrans %}Bonjour {{ user }} !{% endblocktrans %}</a>
-    </span>
+                {% blocktrans with username=user.username %}
+                    {{ username }}
+                {% endblocktrans %}
+            </span>
+        <a href="{% url 'dashboard' %}">{% trans "Tableau de bord" %}</a>
         <a href="{% url 'logout' %}">{% trans "Déconnexion" %}</a>
         {% else %}
         <a href="{% url 'login' %}" class="login-btn">{% trans "Connexion" %}</a>
         {% endif %}
-
     </div>
 </header>
