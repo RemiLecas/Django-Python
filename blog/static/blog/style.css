@@ -1,0 +1,35 @@
+/* Variables Light Mode */
+:root {
+    --bg-color: #f9f9f9;
+    --text-color: #333;
+    --link-color: #007cba;
+    --article-bg: white;
+    --shadow-color: rgba(0,0,0,0.1);
+    --btn-bg: #007cba;
+    --btn-color: white;
+    --btn-hover-bg: #005f8a;
+    --danger-bg: #dc3545;
+    --danger-hover-bg: #c82333;
+}
+
+/* Variables Dark Mode */
+body.dark {
+    --bg-color: #121212;
+    --text-color: #ddd;
+    --link-color: #1e90ff;
+    --article-bg: #1e1e1e;
+    --shadow-color: rgba(0,0,0,0.7);
+    --btn-bg: #1e90ff;
+    --btn-color: white;
+    --btn-hover-bg: #005f8a;
+    --danger-bg: #ff4c4c;
+    --danger-hover-bg: #c82333;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    margin: 0 auto;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}

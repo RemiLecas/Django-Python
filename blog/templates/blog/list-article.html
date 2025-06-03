@@ -1,0 +1,35 @@
+<div class="articles-container">
+  {% for article in articles %}
+  <a href="{% url 'details_article' article.id %}" class="card-link" tabindex="0">
+    <div class="card">
+      {% if article.image %}
+      <img src="{{ article.image.url }}" alt="Image de {{ article.titre }}" class="card-image">
+      {% endif %}
+
+      <div class="card-content">
+        <div class="card-meta">
+          <span class="author">👤 {{ article.auteur.username }}</span>
+          <span class="date">📅 {{ article.date_creation }}</span>
+          <span class="views">👁 {{ article.vues }} vues</span>
+        </div>
+
+        <h2 class="card-title">{{ article.titre }}</h2>
+        <p class="card-description">{{ article.contenu|truncatechars:150 }}</p>
+
+        <div class="card-tags">
+          {% for categorie in article.categories.all %}
+          <span class="tag">{{ categorie.nom }}</span>
+          {% endfor %}
+        </div>
+
+        <div class="card-footer">
+          <span class="likes">❤️ {{ article.likes.count }}</span>
+          <span class="comments">💬 {{ article.commentaires.count }} commentaires</span>
+        </div>
+      </div>
+    </div>
+  </a>
+  {% empty %}
+  <p>Aucun article disponible.</p>
+  {% endfor %}
+</div>

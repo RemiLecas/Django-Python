@@ -1,35 +1,64 @@
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseForbidden
 from django.contrib import messages
 from .models import Article, Categorie
-from .forms import ArticleForm
+from .forms import ArticleForm, CustomUserCreationForm
 from django.utils.translation import gettext as _
 from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
+from django.contrib.auth.forms import AuthenticationForm
 from django.utils.translation import gettext as _
+from django.db.models import Q
+import logging
+logger = logging.getLogger(__name__)
+from functools import wraps
+
+def role_required(allowed_roles):
+    def decorator(view_func):
+        @wraps(view_func)
+        def _wrapped_view(request, *args, **kwargs):
+            if request.user.role in allowed_roles:
+                return view_func(request, *args, **kwargs)
+            return HttpResponseForbidden("Accès refusé.")
+        return _wrapped_view
+    return decorator
 
 def home(request):
-    categorie_id = request.GET.get('categorie')  # Récupère la catégorie choisie dans l'URL
-    categories = Categorie.objects.all()  # Toutes les catégories pour le select
+    categorie_id = request.GET.get('categorie')
+    query = request.GET.get('q', '')
+    categories = Categorie.objects.all()
+    articles = Article.objects.all()
 
     if categorie_id:
-        articles = Article.objects.filter(categories__id=categorie_id).distinct()
-    else:
-        articles = Article.objects.all()
+        articles = articles.filter(categories__id=categorie_id)
+
+    if query:
+        articles = articles.filter(
+            Q(titre__icontains=query) |
+            Q(contenu__icontains=query) |
+            Q(categories__nom__icontains=query)
+        ).distinct()
 
     return render(request, 'blog/home.html', {
         'articles': articles,
         'categories': categories,
-        'categorie_id': categorie_id
+        'categorie_id': categorie_id,
+        'query': query
     })
 
+@login_required
 def ajouter_article(request):
     if request.method == 'POST':
         form = ArticleForm(request.POST, request.FILES)
         if form.is_valid():
-            form.save()
-            messages.success(request, 'Article ajouté avec succès!')
+            article = form.save(commit=False)
+            article.auteur = request.user
+            article.save()
+            form.save_m2m()
+            messages.success(request, 'Article ajouté avec succès !')
             return redirect('home')
+        else:
+            logger.error(form.errors)
     else:
         form = ArticleForm()
 
@@ -45,6 +74,11 @@ def details_article(request, id):
     messages.info(request, f"Vous consultez l'article : {article.titre}")
     return render(request, 'blog/details_article.html', {'article': article})
 
+
+
+
+
+@role_required(['author', 'admin'])
 def supprimer_article(request, article_id):
     article = Article.objects.get(pk=article_id)
     article.delete()
@@ -53,15 +87,18 @@ def supprimer_article(request, article_id):
 def modifier_article(request, article_id):
     article = Article.objects.get(pk=article_id)
 
-    if request.method == 'POST':
-        form = ArticleForm(request.POST, request.FILES, instance=article)
-        if form.is_valid():
-            form.save()
-            return redirect('details_article', id=article.id)
-    else:
-        form = ArticleForm(instance=article)
+    if (request.user.role in ['author', 'editor', 'admin'] and request.user == article.auteur) or request.user.role in ['editor', 'admin']:
+        if request.method == 'POST':
+            form = ArticleForm(request.POST, request.FILES, instance=article)
+            if form.is_valid():
+                form.save()
+                return redirect('details_article', id=article.id)
+        else:
+            form = ArticleForm(instance=article)
 
-    return render(request, 'blog/modifier_article.html', {'form': form, 'article': article})
+        return render(request, 'blog/modifier_article.html', {'form': form, 'article': article})
+    else:
+        return HttpResponseForbidden("Accès refusé.")
 
 def login_view(request):
     if request.method == 'POST':
@@ -80,7 +117,7 @@ def login_view(request):
 
 def register_view(request):
     if request.method == 'POST':
-        form = UserCreationForm(request.POST)
+        form = CustomUserCreationForm(request.POST)
         if form.is_valid():
             form.save()
             messages.success(request, "Inscription réussie. Vous pouvez maintenant vous connecter.")
@@ -88,9 +125,15 @@ def register_view(request):
         else:
             print(form.errors)
     else:
-        form = UserCreationForm()
+        form = CustomUserCreationForm()
     return render(request, 'blog/register.html', {'form': form})
 
 def logout_view(request):
     logout(request)
     return redirect('home')
+
+@login_required
+def dashboard_view(request):
+    return render(request, 'blog/dashboard.html', {
+        'user': request.user,
+    })

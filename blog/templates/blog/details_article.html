@@ -116,12 +116,15 @@
 
 <br>
 
+{% if request.user.role == 'admin' or request.user.role == 'editor' %}
 <a href="{% url 'modifier_article' article.id %}">✏️ Modifier cet article</a>
-
 <form method="post" action="{% url 'supprimer_article' article.id %}" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cet article ?');">
     {% csrf_token %}
     <button type="submit">🗑️ Supprimer l'article</button>
 </form>
+{% endif %}
+
+
 
 <br><br>
 <a href="{% url 'home' %}" class="back-link">← Retour à l'accueil</a>

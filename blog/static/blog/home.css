@@ -1,0 +1,52 @@
+/* Conteneur centré avec largeur max (équivalent à max-w-2xl mx-auto) */
+.search-container {
+    max-width: 42rem; /* 2xl = 672px */
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Formulaire */
+.search-form {
+    position: relative;
+    margin-bottom: 2rem;
+}
+
+/* Zone d'entrée + bouton */
+.search-wrapper {
+    display: flex;
+    align-items: center;
+    background-color: white;
+    border-radius: 9999px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+/* Champ de recherche */
+.search-input {
+    flex: 1;
+    padding: 1rem 1.5rem;
+    font-size: 1.125rem;
+    border: none;
+    outline: none;
+    color: #1f2937;
+    background-color: white;
+}
+
+.search-input::placeholder {
+    color: #6b7280;
+}
+
+/* Bouton de recherche */
+.search-button {
+    padding: 1rem 2rem;
+    background-color: #2563eb;
+    color: white;
+    border: none;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out;
+}
+
+.search-button:hover {
+    background-color: #1d4ed8;
+}

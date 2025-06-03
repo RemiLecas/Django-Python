@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    {% block content %}
+    <h1>Bienvenue sur ton dashboard, {{ user.username }} !</h1>
+    <p>Contenu de ton dashboard ici.</p>
+
+    <form action="{% url 'ajouter_article' %}" method="get" style="display:inline;">
+        <button type="submit">Créer un article</button>
+    </form>
+
+    {% endblock %}
+
+</body>
+</html>
