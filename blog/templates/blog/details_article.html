@@ -2,98 +2,16 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>{{ article.titre }}</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f9f9f9;
-            padding: 40px;
-            max-width: 800px;
-            margin: 0 auto;
-        }
+    {% load static %}
 
-        h1 {
-            color: #333;
-            margin-bottom: 20px;
-        }
+    <link rel="stylesheet" href="{% static 'blog/style.css' %}">
+    <link rel="stylesheet" href="{% static 'blog/header.css' %}">
 
-        img {
-            max-width: 100%;
-            height: auto;
-            margin-bottom: 20px;
-            border-radius: 10px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
-
-        p {
-            line-height: 1.6;
-            color: #444;
-        }
-
-        strong {
-            color: #222;
-        }
-
-        .categories {
-            margin-top: 15px;
-            margin-bottom: 20px;
-        }
-
-        .categories span {
-            background-color: #007cba;
-            color: white;
-            padding: 6px 12px;
-            margin: 0 8px 8px 0;
-            border-radius: 5px;
-            font-size: 0.9em;
-            display: inline-block;
-        }
-
-        a {
-            text-decoration: none;
-            color: #007cba;
-            font-weight: bold;
-            margin-right: 15px;
-        }
-
-        a:hover {
-            text-decoration: underline;
-        }
-
-        form {
-            display: inline-block;
-            margin-top: 20px;
-        }
-
-        button {
-            background-color: #dc3545;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-weight: bold;
-        }
-
-        button:hover {
-            background-color: #c82333;
-        }
-
-        .back-link {
-            display: inline-block;
-            margin-top: 30px;
-            color: #007cba;
-            text-decoration: none;
-            font-weight: bold;
-        }
-
-        .back-link:hover {
-            text-decoration: underline;
-        }
-    </style>
 </head>
 <body>
 {% load i18n %}
+
+{% include "blog/header.html" %}
 
 <h1>{{ article.titre }}</h1>
 

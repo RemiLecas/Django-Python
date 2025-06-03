@@ -1,24 +1,14 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
+  {% load i18n %}
+  {% load static %}
+
   <meta charset="UTF-8">
   <title>Modifier : {{ article.titre }}</title>
+  <link rel="stylesheet" href="{% static 'blog/style.css' %}">
+  <link rel="stylesheet" href="{% static 'blog/header.css' %}">
   <style>
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: #f0f2f5;
-      padding: 40px 20px;
-      max-width: 800px;
-      margin: auto;
-      color: #333;
-    }
-
-    h1 {
-      margin-bottom: 30px;
-      font-size: 1.8rem;
-      text-align: center;
-    }
-
     form {
       background-color: #fff;
       padding: 30px;
@@ -89,6 +79,7 @@
   </style>
 </head>
 <body>
+{% include "blog/header.html" %}
 
 <h1>{% blocktrans with titre=article.titre %}Modifier l'article : {{ titre }}{% endblocktrans %}</h1>
 

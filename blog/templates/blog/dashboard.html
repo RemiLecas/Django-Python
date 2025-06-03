@@ -4,8 +4,15 @@
 <head>
     <meta charset="UTF-8">
     <title>{% trans "Tableau de bord" %}</title>
+    {% load static %}
+
+    <link rel="stylesheet" href="{% static 'blog/header.css' %}">
+    <link rel="stylesheet" href="{% static 'blog/style.css' %}">
+
 </head>
 <body>
+{% include "blog/header.html" %}
+
 {% block content %}
 <h1>
     {% blocktrans with username=user.username %}

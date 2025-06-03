@@ -1,9 +1,15 @@
+
 <!DOCTYPE html>
 <html>
 <head>
+    {% load i18n %}
+    {% load static %}
+
+    <link rel="stylesheet" href="{% static 'blog/style.css' %}">
+    <link rel="stylesheet" href="{% static 'blog/header.css' %}">
+
     <title>{% trans "Ajouter un article" %}</title>
     <style>
-        body { font-family: Arial, sans-serif; margin: 40px; }
         .form-group { margin: 15px 0; }
         label { display: block; margin-bottom: 5px; font-weight: bold; }
         input, textarea { width: 100%; padding: 8px; max-width: 500px; }
@@ -12,6 +18,8 @@
     </style>
 </head>
 <body>
+{% include "blog/header.html" %}
+
 <div class="container">
     <h1>{% trans "Ajouter un article" %}</h1>
 

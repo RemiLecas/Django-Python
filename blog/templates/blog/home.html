@@ -33,28 +33,7 @@
 {% include "blog/list-article.html" %}
 
 
-<script>
-    const modeToggle = document.getElementById('modeToggle');
-    const body = document.body;
 
-    // Charger le mode enregistré
-    const savedMode = localStorage.getItem('mode');
-    if (savedMode === 'dark') {
-        body.classList.add('dark');
-        modeToggle.textContent = '☀️';
-    }
-
-    modeToggle.addEventListener('click', () => {
-        body.classList.toggle('dark');
-        if (body.classList.contains('dark')) {
-            modeToggle.textContent = '☀️';
-            localStorage.setItem('mode', 'dark');
-        } else {
-            modeToggle.textContent = '🌙';
-            localStorage.setItem('mode', 'light');
-        }
-    });
-</script>
 
 </body>
 </html>
