@@ -7,12 +7,10 @@ from .forms import ArticleForm, CustomUserCreationForm
 from django.utils.translation import gettext as _
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import AuthenticationForm
-from django.utils.translation import gettext as _
 from django.db.models import Q
-from django.urls import reverse
-from django.utils.text import slugify
-from django.db.models import Count
-from django.db import models
+from django.contrib.auth.views import PasswordResetView
+from django.urls import reverse_lazy
+from django.contrib.messages.views import SuccessMessageMixin
 
 import logging
 logger = logging.getLogger(__name__)
@@ -174,3 +172,10 @@ def supprimer_commentaire(request, commentaire_id):
         return redirect(article.get_absolute_url())
 
     return redirect(article.get_absolute_url())
+
+class CustomPasswordResetView(SuccessMessageMixin, PasswordResetView):
+    template_name = 'registration/custom_password_reset.html'
+    email_template_name = 'registration/password_reset_email.html'
+    subject_template_name = 'registration/password_reset_subject.txt'
+    success_url = reverse_lazy('password_reset_done')
+    success_message = "Un e-mail de réinitialisation vous a été envoyé si cette adresse est enregistrée."

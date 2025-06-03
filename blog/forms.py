@@ -17,9 +17,16 @@ class ArticleForm(forms.ModelForm):
 
 
 class CustomUserCreationForm(UserCreationForm):
+    email = forms.EmailField(required=True)
     class Meta(UserCreationForm.Meta):
         model = CustomUser
         fields = ('username', 'email')
+
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        if CustomUser.objects.filter(email=email).exists():
+            raise forms.ValidationError("Cette adresse email est déjà utilisée.")
+        return email
 
     def save(self, commit=True):
         user = super().save(commit=False)

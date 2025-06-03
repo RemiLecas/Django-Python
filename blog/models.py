@@ -5,6 +5,7 @@ from django.utils.text import slugify
 from django.db.models import Count
 
 class CustomUser(AbstractUser):
+    email = models.EmailField(unique=True)
     is_reader = models.BooleanField(default=True)
     is_author = models.BooleanField(default=False)
     is_editor = models.BooleanField(default=False)
