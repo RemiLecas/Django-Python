@@ -72,10 +72,14 @@ def ajouter_article(request):
 def details_article(request, id):
     try:
         article = Article.objects.get(pk=id)
-    except Article.DoesNotExist:
-        messages.error(request, "L'article demandé n'existe pas.")
-        return redirect('home')
+        session_key = f'viewed_article_{article.id}'
 
+    except Article.DoesNotExist:
+            messages.error(request, "L'article demandé n'existe pas.")
+            return redirect('home')
+
+    article.vues += 1
+    article.save(update_fields=['vues'])
     messages.info(request, f"Vous consultez l'article : {article.titre}")
     return render(request, 'blog/details_article.html', {'article': article})
 
