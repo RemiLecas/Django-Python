@@ -1,92 +1,171 @@
-/* Conteneur centré avec largeur max (équivalent à max-w-2xl mx-auto) */
+/* Structure de la grille de recherche */
 .search-container {
-    max-width: 42rem; /* 2xl = 672px */
-    margin-left: auto;
-    margin-right: auto;
-}
-
-/* Formulaire */
-.search-form {
-    position: relative;
+    background-color: #f9f9f9;
+    padding: 1.5rem;
+    border-radius: 8px;
     margin-bottom: 2rem;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.05);
 }
 
-/* Zone d'entrée + bouton */
-.search-wrapper {
-    display: flex;
-    align-items: center;
-    background-color: white;
-    border-radius: 9999px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    overflow: hidden;
+.search-form {
+    width: 100%;
 }
 
-/* Champ de recherche */
-.search-input {
-    flex: 1;
-    padding: 1rem 1.5rem;
-    font-size: 1.125rem;
-    border: none;
+.search-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+}
+
+/* Champs de recherche */
+.search-input,
+.search-select,
+.search-date {
+    padding: 0.6rem 0.8rem;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-size: 1rem;
+    background-color: #fff;
+    transition: border-color 0.2s ease;
+}
+
+.search-input:focus,
+.search-select:focus,
+.search-date:focus {
+    border-color: #007BFF;
     outline: none;
-    color: #1f2937;
-    background-color: white;
 }
 
-.search-input::placeholder {
-    color: #6b7280;
-}
-
-/* Bouton de recherche */
+/* Bouton */
 .search-button {
-    padding: 1rem 2rem;
-    background-color: #2563eb;
+    background-color: #007BFF;
     color: white;
     border: none;
-    font-weight: 600;
+    padding: 0.6rem 1rem;
+    border-radius: 6px;
+    font-weight: bold;
     cursor: pointer;
-    transition: background-color 0.2s ease-in-out;
+    transition: background-color 0.2s ease;
 }
 
 .search-button:hover {
-    background-color: #1d4ed8;
+    background-color: #0056b3;
 }
 
-.categories-container {
+/* Filtres actifs */
+.filters-active {
+    margin-bottom: 1.5rem;
+    background: #e6f0ff;
+    padding: 1rem;
+    border-left: 5px solid #007BFF;
+    border-radius: 6px;
+    font-size: 0.95rem;
+}
+
+.clear-filters {
+    margin-left: 1rem;
+    font-weight: bold;
+    color: #007BFF;
+    text-decoration: none;
+}
+
+.clear-filters:hover {
+    text-decoration: underline;
+}
+
+/* Nuage de tags */
+.tag-cloud {
     display: flex;
     flex-wrap: wrap;
-    gap: 16px;
-    margin: 20px;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+.tag {
+    background-color: #007BFF;
+    color: white;
+    padding: 0.4rem 0.8rem;
+    border-radius: 20px;
+    font-weight: 500;
+    transition: transform 0.2s ease;
+    cursor: default;
+}
+
+.tag:hover {
+    transform: scale(1.05);
+}
+
+/* Pagination */
+.pagination {
+    display: flex;
     justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    margin: 2rem 0;
+    font-size: 1rem;
 }
 
-.category-box {
-    background-color: #f8f8f8;
-    border: 1px solid #ddd;
-    border-radius: 12px;
-    padding: 20px;
-    width: 180px;
-    text-align: center;
+.pagination a {
+    padding: 0.4rem 0.8rem;
+    border: 1px solid #007BFF;
+    border-radius: 4px;
     text-decoration: none;
+    color: #007BFF;
+    transition: background-color 0.2s ease;
+}
+
+.pagination a:hover {
+    background-color: #007BFF;
+    color: white;
+}
+
+.section {
+    margin-bottom: 3rem;
+}
+
+.section h2 {
+    font-size: 1.5rem;
+    margin-bottom: 1.2rem;
+    border-left: 5px solid #007BFF;
+    padding-left: 0.6rem;
     color: #333;
-    transition: box-shadow 0.2s ease;
 }
 
-.category-box:hover {
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+.articles-preview {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
 }
 
-.category-icon {
-    font-size: 32px;
-    margin-bottom: 10px;
+/* Carte d’article */
+.preview-card {
+    background-color: #ffffff;
+    border: 1px solid #e1e1e1;
+    border-radius: 10px;
+    padding: 1rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-.category-name {
-    font-weight: bold;
-    margin-bottom: 5px;
-    font-size: 16px;
+.preview-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 12px rgba(0, 123, 255, 0.15);
 }
 
-.category-count {
-    font-size: 14px;
+.preview-card a {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #007BFF;
+    text-decoration: none;
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
+.preview-card a:hover {
+    text-decoration: underline;
+}
+
+.preview-card .meta {
+    font-size: 0.9rem;
     color: #777;
 }

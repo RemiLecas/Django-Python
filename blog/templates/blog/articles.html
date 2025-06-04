@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta charset="UTF-8">
+    {% load static %}
+
+    <link rel="stylesheet" href="{% static 'blog/style.css' %}">
+    <link rel="stylesheet" href="{% static 'blog/header.css' %}">
+    <link rel="stylesheet" href="{% static 'blog/articles.css' %}">
+
+    <title>Title</title>
+</head>
+<body>
+{% load i18n %}
+
+{% include "blog/header.html" %}
+
+<h1>Articles</h1>
+
+<section class="categories-overview">
+    <h2>Catégories</h2>
+    <ul>
+        {% for categorie in categories %}
+        <li>
+            <a href="?categorie={{ categorie.id }}">
+                {{ categorie.nom }}
+                <span class="count">({{ categorie.published_count }})</span>
+            </a>
+        </li>
+        {% empty %}
+        <li>Aucune catégorie trouvée.</li>
+        {% endfor %}
+    </ul>
+</section>
+
+<section class="articles-list">
+    <h2>Articles publiés</h2>
+    {% for article in articles %}
+    <article class="article-preview">
+        <h3><a href="{{ article.get_absolute_url }}">{{ article.titre }}</a></h3>
+        <p>Publié le {{ article.date_creation|date:"d M Y" }}</p>
+        <p>{{ article.extrait }}</p>
+    </article>
+    {% empty %}
+    <p>Aucun article publié.</p>
+    {% endfor %}
+
+    <div class="pagination">
+        {% if articles.has_previous %}
+        <a href="?page={{ articles.previous_page_number }}{% if request.GET.categorie %}&categorie={{ request.GET.categorie }}{% endif %}">Précédent</a>
+        {% endif %}
+        <span>Page {{ articles.number }} sur {{ articles.paginator.num_pages }}</span>
+        {% if articles.has_next %}
+        <a href="?page={{ articles.next_page_number }}{% if request.GET.categorie %}&categorie={{ request.GET.categorie }}{% endif %}">Suivant</a>
+        {% endif %}
+    </div>
+</section>
+
+
+</body>
+</html>

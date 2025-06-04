@@ -26,6 +26,8 @@ urlpatterns = [
     path('article/<slug:slug>/like/', views.like_article, name='like_article'),
     path('article/<slug:slug>/bookmark/', views.bookmark_article, name='bookmark_article'),
     path('bookmark/toggle/<slug:slug>/', views.toggle_bookmark, name='toggle_bookmark'),
+    path('articles/', views.articles_view, name='articles'),
+
 
 ]
 

@@ -1,0 +1,55 @@
+.categories-overview ul {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.categories-overview li {
+    background: #f0f0f0;
+    border-radius: 4px;
+    padding: 6px 12px;
+}
+
+.categories-overview a {
+    text-decoration: none;
+    color: #333;
+    font-weight: 600;
+}
+
+.categories-overview a:hover {
+    text-decoration: underline;
+}
+
+.categories-overview .count {
+    color: #777;
+    margin-left: 5px;
+    font-weight: normal;
+}
+
+.articles-list article.article-preview {
+    border-bottom: 1px solid #ddd;
+    padding: 12px 0;
+}
+
+.articles-list h3 {
+    margin-bottom: 5px;
+}
+
+.pagination {
+    margin-top: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.pagination a {
+    margin: 0 5px;
+    text-decoration: none;
+    color: #0066cc;
+}
+
+.pagination a:hover {
+    text-decoration: underline;
+}

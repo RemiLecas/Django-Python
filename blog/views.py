@@ -17,6 +17,7 @@ from django.db.models import Count
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
 from django.views.decorators.http import require_POST
+from django.core.paginator import Paginator
 
 import logging
 logger = logging.getLogger(__name__)
@@ -32,33 +33,81 @@ def role_required(allowed_roles):
         return _wrapped_view
     return decorator
 
-def home(request):
-    categorie_id = request.GET.get('categorie')
-    query = request.GET.get('q', '')
+from django.db.models import Q, Count
 
-    articles = Article.objects.all()
-    categories = Categorie.objects.all()
-    tags = Tag.objects.annotate(article_count=Count('articles')) \
-        .filter(article_count__gt=0) \
-        .order_by('-article_count')
+
+def home(request):
+    query = request.GET.get('q', '')
+    categorie_id = request.GET.get('categorie')
+    auteur_id = request.GET.get('auteur')
+    tag_id = request.GET.get('tag')
+    date_min = request.GET.get('date_min')
+    date_max = request.GET.get('date_max')
+
+    all_articles = Article.objects.filter(statut='published') \
+        .select_related('auteur') \
+        .prefetch_related('categories', 'tags')
+
+    categorie_nom = ''
+    auteur_nom = ''
+    tag_nom = ''
 
     if categorie_id:
-        articles = articles.filter(categories__id=categorie_id)
+        categorie = Categorie.objects.filter(id=categorie_id).first()
+        categorie_nom = categorie.nom if categorie else ''
+
+    if auteur_id:
+        auteur = CustomUser.objects.filter(id=auteur_id).first()
+        auteur_nom = auteur.get_full_name() or auteur.username if auteur else ''
+
+    if tag_id:
+        tag = Tag.objects.filter(id=tag_id).first()
+        tag_nom = tag.nom if tag else ''
+
+    if date_min:
+        all_articles = all_articles.filter(date_creation__gte=date_min)
+
+    if date_max:
+        all_articles = all_articles.filter(date_creation__lte=date_max)
 
     if query:
-        articles = articles.filter(
+        all_articles = all_articles.filter(
             Q(titre__icontains=query) |
             Q(contenu__icontains=query) |
-            Q(categories__nom__icontains=query)
+            Q(categories__nom__icontains=query) |
+            Q(tags__nom__icontains=query) |
+            Q(auteur__username__icontains=query) |
+            Q(auteur__first_name__icontains=query) |
+            Q(auteur__last_name__icontains=query)
         ).distinct()
 
+    derniers_articles = all_articles.order_by('-date_creation')[:5]
+    articles_populaires = all_articles.order_by('-vues')[:5]
+
+    paginator = Paginator(all_articles.order_by('-date_creation'), 6)
+    page_number = request.GET.get('page')
+    page_articles = paginator.get_page(page_number)
+
+    categories = Categorie.objects.all()
+    auteurs = CustomUser.objects.filter(article__statut='published').distinct()
+    tags = Tag.objects.annotate(article_count=Count('articles')).filter(article_count__gt=0).order_by('-article_count')[:20]
+
     return render(request, 'blog/home.html', {
-        'articles': articles,
+        'derniers_articles': derniers_articles,
+        'articles_populaires': articles_populaires,
+        'articles': page_articles,
         'categories': categories,
+        'auteurs': auteurs,
+        'tags': tags,
         'categorie_id': categorie_id,
+        'auteur_id': auteur_id,
+        'tag_id': tag_id,
         'query': query,
-        'tags': tags
+        'date_min': date_min,
+        'date_max': date_max,
     })
+
+
 @login_required
 def ajouter_article(request):
     if request.method == 'POST':
@@ -220,6 +269,31 @@ def toggle_bookmark(request, slug):
     else:
         user.bookmarks.add(article)
     return redirect(article.get_absolute_url())
+
+def articles_view(request):
+    categorie_id = request.GET.get('categorie')
+
+    # Récupérer catégories avec compte d'articles publiés
+    categories = Categorie.objects.annotate(
+        published_count=Count('articles', filter=Q(articles__statut='published'))
+    ).order_by('-published_count', 'nom')
+
+    # Récupérer articles publiés, filtrés si catégorie sélectionnée
+    articles = Article.objects.filter(statut='published')
+    if categorie_id:
+        articles = articles.filter(categories__id=categorie_id)
+
+    articles = articles.order_by('-date_creation')
+
+    # Pagination
+    paginator = Paginator(articles, 10)
+    page_number = request.GET.get('page')
+    page_articles = paginator.get_page(page_number)
+
+    return render(request, 'blog/articles.html', {
+        'categories': categories,
+        'articles': page_articles,
+    })
 
 class CustomPasswordResetView(SuccessMessageMixin, PasswordResetView):
     template_name = 'registration/custom_password_reset.html'

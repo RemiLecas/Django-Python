@@ -18,37 +18,113 @@
 
 <div class="search-container">
     <form method="GET" action="{% url 'home' %}" class="search-form">
-        <div class="search-wrapper">
-            <input type="text" name="q" value="{{ query|default:'' }}" placeholder="{% trans "Rechercher par titre ou auteur..." %}" class="search-input">
+        <div class="search-grid">
+            <!-- Recherche texte -->
+            <input type="text" name="q" value="{{ query|default:'' }}" placeholder="{% trans 'Rechercher par titre, contenu, auteur...' %}" class="search-input">
+
+            <!-- Catégories -->
+            <select name="categorie" class="search-select">
+                <option value="">{% trans 'Toutes les catégories' %}</option>
+                {% for cat in categories %}
+                <option value="{{ cat.id }}" {% if cat.id|stringformat:"s" == categorie_id %}selected{% endif %}>
+                {{ cat.nom }}
+                </option>
+                {% endfor %}
+            </select>
+
+            <!-- Tags -->
+            <select name="tag" class="search-select">
+                <option value="">{% trans 'Tous les tags' %}</option>
+                {% for t in tags %}
+                <option value="{{ t.id }}" {% if t.id|stringformat:"s" == tag_id %}selected{% endif %}>
+                {{ t.nom }}
+                </option>
+                {% endfor %}
+            </select>
+
+            <!-- Période -->
+            <input type="date" name="date_min" value="{{ date_min }}" class="search-date" placeholder="Depuis">
+            <input type="date" name="date_max" value="{{ date_max }}" class="search-date" placeholder="Jusqu'à">
+
+            <!-- Bouton -->
             <button type="submit" class="search-button">
-                🔍 {% trans "Rechercher" %}
+                🔍 {% trans 'Rechercher' %}
             </button>
         </div>
     </form>
 </div>
 
-<!--<div class="categories-container">-->
-<!--    {% for cat in categories %}-->
-<!--    <a href="?categorie={{ cat.id }}" class="category-box">-->
-<!--        <div class="category-icon">-->
-<!--            <i class="{{ cat.icone }}"></i>-->
-<!--        </div>-->
-<!--        <div class="category-name">{{ cat.nom }}</div>-->
-<!--        <div class="category-count">{{ cat.article_count }} article{{ cat.article_count|pluralize }}</div>-->
-<!--    </a>-->
-<!--    {% endfor %}-->
-<!--</div>-->
+{% if query or categorie_id or auteur_id or tag_id or date_min or date_max %}
+<div class="filters-active">
+    <p><strong>{% trans "Filtres actifs" %} :</strong>
+        {% if query %}🔍 <em>{{ query }}</em> {% endif %}
+        {% if categorie_nom %}📂 <em>{{ categorie_nom }}</em> {% endif %}
+        {% if auteur_nom %}👤 <em>{{ auteur_nom }}</em> {% endif %}
+        {% if tag_nom %}🏷 <em>{{ tag_nom }}</em> {% endif %}
 
-<h2>Tags les plus populaires</h2>
-<div class="tag-cloud">
-    {% for tag in tags %}
-    <span style="font-size: {{ tag.article_count|add:10 }}px;">
-            {{ tag.nom }} ({{ tag.article_count }})
-        </span>
-    {% endfor %}
+        {% if date_min %}🕒 {% trans "Depuis" %} <em>{{ date_min }}</em> {% endif %}
+        {% if date_max %}🕒 {% trans "Jusqu’à" %} <em>{{ date_max }}</em> {% endif %}
+        <a href="{% url 'home' %}" class="clear-filters">✖ {% trans "Réinitialiser" %}</a>
+    </p>
 </div>
+{% endif %}
 
-{% include "blog/list-article.html" %}
+<!-- Derniers articles -->
+<section class="section">
+    <h2>{% trans "Derniers articles" %}</h2>
+    <div class="articles-preview">
+        {% for article in derniers_articles|slice:":4" %}
+        <div class="preview-card">
+            <a href="{{ article.get_absolute_url }}">{{ article.titre }}</a>
+            <span class="meta">{{ article.date_creation|date:"d M Y" }}</span>
+        </div>
+        {% empty %}
+        <p>{% trans "Aucun article récent." %}</p>
+        {% endfor %}
+    </div>
+</section>
 
+<!-- Articles populaires -->
+<section class="section">
+    <h2>{% trans "Articles populaires" %}</h2>
+    <div class="articles-preview">
+        {% for article in articles_populaires|slice:":4" %}
+        <div class="preview-card">
+            <a href="{{ article.get_absolute_url }}">{{ article.titre }}</a>
+            <span class="meta">👁 {{ article.vues }}</span>
+        </div>
+        {% empty %}
+        <p>{% trans "Aucun article populaire." %}</p>
+        {% endfor %}
+    </div>
+</section>
+
+<!-- Tags populaires -->
+<section class="section">
+    <h2>{% trans "Tags populaires" %}</h2>
+    <div class="tag-cloud">
+        {% for tag in tags|slice:":5" %}
+        <span class="tag" style="font-size: {{ tag.article_count|add:10 }}px">{{ tag.nom }}</span>
+        {% endfor %}
+    </div>
+</section>
+
+<!-- Liste complète paginée -->
+<section class="section">
+
+    <h2>{% trans "Tous les articles" %}</h2>
+    {% include "blog/list-article.html" %}
+</section>
+
+<!-- Pagination simple -->
+<div class="pagination">
+    {% if articles.has_previous %}
+    <a href="?page={{ articles.previous_page_number }}{% if query %}&q={{ query }}{% endif %}{% if categorie_id %}&categorie={{ categorie_id }}{% endif %}">&laquo; {% trans "Précédent" %}</a>
+    {% endif %}
+    <span>{% trans "Page" %} {{ articles.number }} {% trans "sur" %} {{ articles.paginator.num_pages }}</span>
+    {% if articles.has_next %}
+    <a href="?page={{ articles.next_page_number }}{% if query %}&q={{ query }}{% endif %}{% if categorie_id %}&categorie={{ categorie_id }}{% endif %}">{% trans "Suivant" %} &raquo;</a>
+    {% endif %}
+</div>
 </body>
 </html>
