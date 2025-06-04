@@ -10,7 +10,7 @@ urlpatterns = [
 
     path('', views.home, name='home'),
     path('ajouter/', views.ajouter_article, name='ajouter_article'),
-    path('details/<int:id>/', views.details_article, name='details_article'),
+    path('article/<slug:slug>/', views.details_article, name='details_article'),
     path('article/<int:article_id>/supprimer/', views.supprimer_article, name='supprimer_article'),
     path('article/<int:article_id>/modifier/', views.modifier_article, name='modifier_article'),
     path('login/', views.login_view, name='login'),
@@ -23,6 +23,10 @@ urlpatterns = [
     path("mot-de-passe-envoye/", auth_views.PasswordResetDoneView.as_view(template_name='registration/custom_password_reset_done.html'), name="password_reset_done"),
     path("reinitialiser/<uidb64>/<token>/", auth_views.PasswordResetConfirmView.as_view(template_name='registration/custom_password_reset_confirm.html'), name="password_reset_confirm"),
     path("reinitialisation-terminee/", auth_views.PasswordResetCompleteView.as_view(template_name='registration/custom_password_reset_complete.html'), name="password_reset_complete"),
+    path('article/<slug:slug>/like/', views.like_article, name='like_article'),
+    path('article/<slug:slug>/bookmark/', views.bookmark_article, name='bookmark_article'),
+    path('bookmark/toggle/<slug:slug>/', views.toggle_bookmark, name='toggle_bookmark'),
+
 ]
 
 if settings.DEBUG:

@@ -95,12 +95,19 @@
   <label for="contenu">{% trans "Contenu" %}</label>
   <textarea id="contenu" name="contenu" required>{{ article.contenu }}</textarea>
 
-  <label for="commentaire">{% trans "Commentaire" %}</label>
-  <textarea id="commentaire" name="commentaire">{{ article.commentaire }}</textarea>
-
   <div class="form-group">
     <label for="{{ form.categories.id_for_label }}">{% trans "Catégories :" %}</label>
     {{ form.categories }}
+  </div>
+
+  <div class="form-group">
+    <label for="{{ form.image.id_for_label }}">{% trans "Image" %} :</label>
+    {{ form.image }}
+  </div>
+
+  <div class="form-group">
+    <label for="{{ form.categories.id_for_label }}">{% trans "Tags" %} :</label>
+    {{ form.tags }}
   </div>
 
   <button type="submit">💾 {% trans "Enregistrer les modifications" %}</button>

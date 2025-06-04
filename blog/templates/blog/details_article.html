@@ -22,11 +22,47 @@
 <p>{{ article.contenu }}</p>
 
 <p><strong>{% trans "Publié le :" %}</strong> {{ article.date_creation|date:"d/m/Y à H:i" }}</p>
+<p><strong>{% trans "Modifié le :" %}</strong> {{ article.date_modification|date:"d/m/Y à H:i" }}</p>
+
+{% if request.user.is_authenticated %}
+<form action="{% url 'like_article' article.slug %}" method="post" style="display:inline;">
+    {% csrf_token %}
+    <button type="submit" style="background:none; border:none; cursor:pointer;">
+        {% if request.user in article.likes.all %}
+        ❤️ {% trans "Unlike" %}
+        {% else %}
+        🤍 {% trans "Like" %}
+        {% endif %}
+    </button>
+    <span>{{ article.total_likes }} {% trans "like(s)" %}</span>
+</form>
+
+<form action="{% url 'bookmark_article' article.slug %}" method="post" style="display:inline; margin-left: 15px;">
+    {% csrf_token %}
+    <button type="submit" style="background:none; border:none; cursor:pointer;">
+        {% if request.user in article.bookmarks.all %}
+        📌 {% trans "Retirer des favoris" %}
+        {% else %}
+        📍 {% trans "Ajouter aux favoris" %}
+        {% endif %}
+    </button>
+    <span>{{ article.total_bookmarks }} {% trans "favori(s)" %}</span>
+</form>
+{% else %}
+<p><a href="{% url 'login' %}">{% trans "Connectez-vous" %}</a> {% trans "pour liker ou enregistrer cet article." %}</p>
+{% endif %}
 
 <div class="categories">
     <strong>{% trans "Catégories :" %}</strong>
     {% for categorie in article.categories.all %}
     <span class="tag">{{ categorie.nom }}</span>
+    {% endfor %}
+</div>
+
+<div class="categories">
+    <strong>{% trans "Tags :" %}</strong>
+    {% for tag in article.tags.all %}
+    <span class="tag">{{ tag.nom }}</span>
     {% endfor %}
 </div>
 

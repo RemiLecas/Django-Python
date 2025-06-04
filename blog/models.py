@@ -2,7 +2,14 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.urls import reverse
 from django.utils.text import slugify
-from django.db.models import Count
+from django.db.models import Count, Q
+import math
+import re
+from django.core.exceptions import ValidationError
+
+def validate_contenu(value):
+    if len(value) < 100:
+        raise ValidationError("Le contenu doit faire au moins 100 caractères.")
 
 class CustomUser(AbstractUser):
     email = models.EmailField(unique=True)
@@ -10,12 +17,14 @@ class CustomUser(AbstractUser):
     is_author = models.BooleanField(default=False)
     is_editor = models.BooleanField(default=False)
     is_admin = models.BooleanField(default=False)
+    bookmarks = models.ManyToManyField('Article', related_name='bookmarked_by', blank=True)
 
 class Categorie(models.Model):
     nom = models.CharField(max_length=100, unique=True)
     description = models.TextField(blank=True)
     slug = models.SlugField(max_length=100, unique=True)
-    icone = models.CharField(max_length=50, blank=True)  # Par ex. nom d'icône fontawesome
+    icone = models.CharField(max_length=50, blank=True)
+    article_count = models.PositiveIntegerField(default=0, editable=False)
 
     class Meta:
         ordering = ['nom']
@@ -29,16 +38,20 @@ class Categorie(models.Model):
     def get_absolute_url(self):
         return reverse('category_detail', kwargs={'slug': self.slug})
 
-    @property
-    def article_count(self):
-        # Compte dynamique des articles liés à cette catégorie
-        return self.article_set.count()
-
     def save(self, *args, **kwargs):
         # Génère le slug automatiquement si absent
         if not self.slug:
             self.slug = slugify(self.nom)
         super().save(*args, **kwargs)
+
+
+    @classmethod
+    def update_article_counts(cls):
+        categories = cls.objects.annotate(
+            count=Count('articles', filter=Q(articles__statut='published'))
+        )
+        for category in categories:
+            cls.objects.filter(id=category.id).update(article_count=category.count)
 
 class Tag(models.Model):
     nom = models.CharField(max_length=50, unique=True)
@@ -52,8 +65,7 @@ class Tag(models.Model):
 
     @classmethod
     def get_popular_tags(cls, limit=10):
-        # Retourne les tags les plus utilisés par nombre d'articles
-        return cls.objects.annotate(num_articles=Count('article')).order_by('-num_articles')[:limit]
+        return cls.objects.annotate(num_articles=Count('articles')).order_by('-num_articles')[:limit]
 
     def save(self, *args, **kwargs):
         if not self.slug:
@@ -69,17 +81,18 @@ class Article(models.Model):
 
     titre = models.CharField(max_length=200)
     slug = models.SlugField(max_length=200, unique=True, null=True, blank=True)
-    contenu = models.TextField()
+    contenu = models.TextField(validators=[validate_contenu])
     extrait = models.TextField(blank=True)
     auteur = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     categories = models.ManyToManyField(Categorie, related_name='articles', blank=True)
-    tags = models.ManyToManyField(Tag, blank=True, related_name='articles')
+    tags = models.ManyToManyField(Tag, related_name='articles', blank=True)
     statut = models.CharField(max_length=10, choices=STATUT_CHOICES, default='draft')
     image = models.ImageField(upload_to='articles/images/', blank=True, null=True)
     date_creation = models.DateTimeField(auto_now_add=True)
     date_modification = models.DateTimeField(auto_now=True)
     vues = models.PositiveIntegerField(default=0)
-    likes = models.PositiveIntegerField(default=0)
+    likes = models.ManyToManyField(CustomUser, related_name='liked_articles', blank=True)
+    bookmarks = models.ManyToManyField(CustomUser, related_name='bookmarked_articles', blank=True)
 
     class Meta:
         ordering = ['-date_creation']
@@ -88,17 +101,43 @@ class Article(models.Model):
         return self.titre
 
     def get_absolute_url(self):
-        return reverse('details_article', kwargs={'id': self.id})
+        return reverse('details_article', kwargs={'slug': self.slug})
 
     def save(self, *args, **kwargs):
-        # Génère automatiquement un slug à partir du titre si vide
         if not self.slug:
             self.slug = slugify(self.titre)
-        # Génère un extrait si vide (ex: 150 premiers caractères)
         if not self.extrait:
             self.extrait = self.contenu[:150] + '...' if len(self.contenu) > 150 else self.contenu
         super().save(*args, **kwargs)
 
+    def temps_lecture(self):
+        words = len(re.findall(r'\w+', self.contenu))
+        minutes = max(1, math.ceil(words / 200))
+        return minutes
+
+    def total_likes(self):
+        return self.likes.count()
+
+    def toggle_like(self, user):
+        if user in self.likes.all():
+            self.likes.remove(user)
+            return False  # unlike
+        else:
+            self.likes.add(user)
+            return True  # like
+
+    # méthode pratique pour toggler les bookmarks
+    def toggle_bookmark(self, user):
+        if user in self.bookmarks.all():
+            self.bookmarks.remove(user)
+            return False  # unbookmark
+        else:
+            self.bookmarks.add(user)
+            return True  # bookmark
+
+    # compteur bookmark
+    def total_bookmarks(self):
+        return self.bookmarks.count()
 
 class Commentaire(models.Model):
     article = models.ForeignKey(Article, on_delete=models.CASCADE, related_name='commentaires')

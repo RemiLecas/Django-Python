@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="{% static 'blog/home.css' %}">
     <link rel="stylesheet" href="{% static 'blog/header.css' %}">
     <link rel="stylesheet" href="{% static 'blog/list-article.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
 </head>
 <body>
@@ -26,14 +27,28 @@
     </form>
 </div>
 
+<!--<div class="categories-container">-->
+<!--    {% for cat in categories %}-->
+<!--    <a href="?categorie={{ cat.id }}" class="category-box">-->
+<!--        <div class="category-icon">-->
+<!--            <i class="{{ cat.icone }}"></i>-->
+<!--        </div>-->
+<!--        <div class="category-name">{{ cat.nom }}</div>-->
+<!--        <div class="category-count">{{ cat.article_count }} article{{ cat.article_count|pluralize }}</div>-->
+<!--    </a>-->
+<!--    {% endfor %}-->
+<!--</div>-->
 
-{% if query or categorie_id %}
-<p><strong>{{ articles|length }}</strong> article(s) trouvé(s).</p>
-{% endif %}
+<h2>Tags les plus populaires</h2>
+<div class="tag-cloud">
+    {% for tag in tags %}
+    <span style="font-size: {{ tag.article_count|add:10 }}px;">
+            {{ tag.nom }} ({{ tag.article_count }})
+        </span>
+    {% endfor %}
+</div>
+
 {% include "blog/list-article.html" %}
-
-
-
 
 </body>
 </html>

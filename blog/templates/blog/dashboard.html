@@ -1,19 +1,15 @@
+{% block content %}
 {% load i18n %}
-<!DOCTYPE html>
-<html lang="{{ LANGUAGE_CODE }}">
 <head>
     <meta charset="UTF-8">
-    <title>{% trans "Tableau de bord" %}</title>
     {% load static %}
 
-    <link rel="stylesheet" href="{% static 'blog/header.css' %}">
     <link rel="stylesheet" href="{% static 'blog/style.css' %}">
+    <link rel="stylesheet" href="{% static 'blog/header.css' %}">
 
 </head>
-<body>
 {% include "blog/header.html" %}
 
-{% block content %}
 <h1>
     {% blocktrans with username=user.username %}
     Bienvenue sur ton dashboard, {{ username }} !
@@ -25,6 +21,26 @@
     <button type="submit">{% trans "Créer un article" %}</button>
 </form>
 
+<h2>{% trans "Mes articles en favoris" %}</h2>
+{% if bookmarks %}
+<ul>
+    {% for article in bookmarks %}
+    <li>
+        <a href="{{ article.get_absolute_url }}">{{ article.titre }}</a>
+        <form action="{% url 'bookmark_article' article.slug %}" method="post" style="display:inline;">
+            {% csrf_token %}
+            <button type="submit" style="background:none; border:none; color:#007cba; cursor:pointer;">
+                ❌ {% trans "Retirer des favoris" %}
+            </button>
+        </form>
+    </li>
+    {% endfor %}
+</ul>
+{% else %}
+<p>{% trans "Vous n'avez aucun article en favoris." %}</p>
+{% endif %}
+
+<h2>{% trans "Mes brouillons" %}</h2>
 {% if brouillons %}
 <ul>
     {% for article in brouillons %}
@@ -50,7 +66,3 @@
 <p>{% trans "Vous n'avez aucun brouillon." %}</p>
 {% endif %}
 {% endblock %}
-
-<a href="{% url 'home' %}" class="back-link">← {% trans "Retour à l'accueil" %}</a>
-</body>
-</html>

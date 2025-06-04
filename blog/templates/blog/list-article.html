@@ -3,7 +3,7 @@
 <div class="articles-container">
   {% for article in articles %}
   {% if article.statut == "published" %}
-  <a href="{% url 'details_article' article.id %}" class="card-link" tabindex="0">
+  <a href="{% url 'details_article' article.slug %}" class="card-link" tabindex="0">
     <div class="card">
       {% if article.image %}
       <img src="{{ article.image.url }}" alt="{% blocktrans %}Image de {{ article.titre }}{% endblocktrans %}" class="card-image">
@@ -17,17 +17,25 @@
         </div>
 
         <h2 class="card-title">{{ article.titre }}</h2>
-        <p class="card-description">{{ article.contenu|truncatechars:150 }}</p>
-
-        <div class="card-tags">
+        <p class="card-description">
+          {{ article.extrait|default:article.contenu|truncatechars:150 }}
+        </p>
+        <div class="card-categorie">
           {% for categorie in article.categories.all %}
           <span class="tag">{{ categorie.nom }}</span>
+          {% endfor %}
+        </div>
+
+        <div class="card-tags">
+          {% for tag in article.tags.all %}
+          <span class="tag">{{ tag.nom }}</span>
           {% endfor %}
         </div>
 
         <div class="card-footer">
           <span class="likes">❤️ {{ article.likes.count }}</span>
           <span class="comments">💬 {% blocktrans count count=article.commentaires.count %}{{ count }} commentaire{% plural %}{{ count }} commentaires{% endblocktrans %}</span>
+          <span class="reading-time">⏱ {{ article.temps_lecture }} min de lecture</span>
         </div>
       </div>
     </div>

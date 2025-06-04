@@ -15,6 +15,12 @@
         input, textarea { width: 100%; padding: 8px; max-width: 500px; }
         .btn { background: #007cba; color: white; padding: 10px 20px; border: none; cursor: pointer; }
         .btn-secondary { background: #6c757d; }
+        .error {
+            color: red;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+
     </style>
 </head>
 <body>
@@ -26,6 +32,12 @@
     <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
 
+        {% if form.non_field_errors %}
+        <div class="error">
+            {{ form.non_field_errors }}
+        </div>
+        {% endif %}
+
         <div class="form-group">
             <label for="{{ form.titre.id_for_label }}">{% trans "Titre" %} :</label>
             {{ form.titre }}
@@ -34,6 +46,11 @@
         <div class="form-group">
             <label for="{{ form.contenu.id_for_label }}">{% trans "Contenu" %} :</label>
             {{ form.contenu }}
+            {% if form.contenu.errors %}
+            <div class="error">
+                {{ form.contenu.errors }}
+            </div>
+            {% endif %}
         </div>
 
         <div class="form-group">
@@ -46,6 +63,10 @@
             {{ form.image }}
         </div>
 
+        <div class="form-group">
+            <label for="{{ form.categories.id_for_label }}">{% trans "Tags" %} :</label>
+            {{ form.tags }}
+        </div>
         <div class="form-group">
             <button type="submit" class="btn">✅ {% trans "Enregistrer" %}</button>
             <a href="{% url 'home' %}" class="btn btn-secondary">↩️ {% trans "Annuler" %}</a>

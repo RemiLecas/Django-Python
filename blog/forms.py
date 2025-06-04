@@ -12,7 +12,7 @@ class ArticleForm(forms.ModelForm):
             'contenu': forms.Textarea(attrs={'rows':5, 'placeholder': 'Contenu'}),
             'extrait': forms.Textarea(attrs={'rows':2, 'placeholder': 'Extrait (facultatif)'}),
             'categories': forms.CheckboxSelectMultiple(),
-            'tags': forms.SelectMultiple(attrs={'size': 5}),
+            'tags': forms.CheckboxSelectMultiple(),
         }
 
 
