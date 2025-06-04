@@ -19,7 +19,7 @@ from django.urls import reverse
 from django.views.decorators.http import require_POST
 from django.core.paginator import Paginator
 import logging
-logger = logging.getLogger(__name__)
+logger = logging.getLogger('app')
 from functools import wraps
 from django.db.models import Q, Count
 
@@ -128,7 +128,7 @@ def ajouter_article(request):
             messages.success(request, 'Article ajouté avec succès !')
             return redirect('home')
         else:
-            logger.error(form.errors)
+            logger.error(f"Erreur lors de l'ajout d'article par {request.user.username} : {form.errors}")
     else:
         form = ArticleForm()
 
@@ -141,20 +141,24 @@ def details_article(request, slug):
 
     except Article.DoesNotExist:
             messages.error(request, "L'article demandé n'existe pas.")
+            logger.warning(f"Article non trouvé pour le slug : {slug}")
             return redirect('home')
 
     if request.method == 'POST':
         if not request.user.is_authenticated:
+            logger.warning("Tentative de commenter sans être authentifié.")
             return redirect('login')
         contenu = request.POST.get('contenu')
         if contenu:
             Commentaire.objects.create(article=article, auteur=request.user, contenu=contenu)
+            logger.info(f"Commentaire ajouté sur l'article '{article.titre}' par {request.user.username}")
             return redirect('details_article', slug=article.slug)
 
 
     article.vues += 1
     article.save(update_fields=['vues'])
     messages.info(request, f"Vous consultez l'article : {article.titre}")
+    logger.info(f"Article '{article.titre}' consulté, vues = {article.vues}")
 
     return render(request, 'blog/details_article.html', {
         'article': article,
@@ -189,10 +193,11 @@ def login_view(request):
         if form.is_valid():
             user = form.get_user()
             login(request, user)
+            logger.info(f"Utilisateur connecté : {user.username}")
             return redirect('home')
         else:
             messages.error(request, "Nom d'utilisateur ou mot de passe invalide.")
-            # Ici, si le formulaire est invalide, tu n'as pas défini `form` dans ce bloc else
+            logger.warning(f"Tentative de connexion échouée pour login : {request.POST.get('username')}")
     else:
         form = AuthenticationForm()
     return render(request, 'blog/login.html', {'form': form})
