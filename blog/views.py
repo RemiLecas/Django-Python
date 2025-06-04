@@ -18,22 +18,29 @@ from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
 from django.views.decorators.http import require_POST
 from django.core.paginator import Paginator
-
 import logging
 logger = logging.getLogger(__name__)
 from functools import wraps
+from django.db.models import Q, Count
 
-def role_required(allowed_roles):
+def role_required(min_role):
+    roles_hierarchy = ['reader', 'author', 'editor', 'admin']
+
     def decorator(view_func):
         @wraps(view_func)
         def _wrapped_view(request, *args, **kwargs):
-            if request.user.role in allowed_roles:
+            if not request.user.is_authenticated:
+                return HttpResponseForbidden("Authentification requise.")
+
+            user_role_index = roles_hierarchy.index(request.user.role) if request.user.role in roles_hierarchy else -1
+            min_role_index = roles_hierarchy.index(min_role)
+
+            if user_role_index >= min_role_index:
                 return view_func(request, *args, **kwargs)
             return HttpResponseForbidden("Accès refusé.")
         return _wrapped_view
     return decorator
 
-from django.db.models import Q, Count
 
 
 def home(request):
@@ -109,6 +116,7 @@ def home(request):
 
 
 @login_required
+@role_required('author')
 def ajouter_article(request):
     if request.method == 'POST':
         form = ArticleForm(request.POST, request.FILES)
@@ -141,7 +149,8 @@ def details_article(request, slug):
         contenu = request.POST.get('contenu')
         if contenu:
             Commentaire.objects.create(article=article, auteur=request.user, contenu=contenu)
-            return redirect('details_article', id=article.id)
+            return redirect('details_article', slug=article.slug)
+
 
     article.vues += 1
     article.save(update_fields=['vues'])
@@ -151,11 +160,16 @@ def details_article(request, slug):
         'article': article,
         'commentaires': commentaires,
     })
+
+@login_required
+@role_required('author')
 def supprimer_article(request, article_id):
     article = Article.objects.get(pk=article_id)
     article.delete()
     return redirect('home')
 
+@login_required
+@role_required('author')
 def modifier_article(request, article_id):
     article = Article.objects.get(pk=article_id)
 
