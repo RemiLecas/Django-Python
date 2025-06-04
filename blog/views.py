@@ -166,27 +166,44 @@ def details_article(request, slug):
     })
 
 @login_required
-@role_required('author')
 def supprimer_article(request, article_id):
-    article = Article.objects.get(pk=article_id)
-    article.delete()
+    try:
+        article = Article.objects.get(pk=article_id)
+        if article.auteur != request.user and request.user.role != 'admin':
+            messages.error(request, "Vous n'êtes pas autorisé à supprimer cet article.")
+            logger.warning(f"Utilisateur {request.user.username} a tenté de supprimer l'article ID {article_id} sans permission.")
+            return redirect('home')
+
+        article.delete()
+        logger.info(f"Article ID {article_id} supprimé par {request.user.username}")
+        messages.success(request, "Article supprimé avec succès.")
+    except Article.DoesNotExist:
+        logger.error(f"Tentative de suppression d'un article non-existant ID {article_id} par {request.user.username}")
+        messages.error(request, "Article introuvable.")
     return redirect('home')
 
 @login_required
 @role_required('author')
 def modifier_article(request, article_id):
-    article = Article.objects.get(pk=article_id)
+    try:
+        article = Article.objects.get(pk=article_id)
+    except Article.DoesNotExist:
+        logger.error(f"Tentative de modification d'un article non-existant ID {article_id} par {request.user.username}")
+        messages.error(request, "Article introuvable.")
+        return redirect('home')
 
     if request.method == 'POST':
         form = ArticleForm(request.POST, request.FILES, instance=article)
         if form.is_valid():
             form.save()
+            logger.info(f"Article ID {article_id} modifié par {request.user.username}")
             return redirect('details_article', slug=article.slug)
+        else:
+            logger.error(f"Erreur de modification article ID {article_id} par {request.user.username} : {form.errors}")
     else:
         form = ArticleForm(instance=article)
 
     return render(request, 'blog/modifier_article.html', {'form': form, 'article': article})
-
 def login_view(request):
     if request.method == 'POST':
         form = AuthenticationForm(request, data=request.POST)
@@ -233,22 +250,34 @@ def dashboard_view(request):
 
 @login_required()
 def publier_article(request, article_id):
-    article = Article.objects.get(pk=article_id)
-    article.statut = 'published'
-    article.save()
-    messages.success(request, f"L'article '{article.titre}' a été publié.")
+    try:
+        article = Article.objects.get(pk=article_id)
+        article.statut = 'published'
+        article.save()
+        messages.success(request, f"L'article '{article.titre}' a été publié.")
+        logger.info(f"Article ID {article_id} publié par {request.user.username}")
+    except Article.DoesNotExist:
+        messages.error(request, "Article introuvable.")
+        logger.error(f"Tentative de publication d'article non-existant ID {article_id} par {request.user.username}")
     return redirect('dashboard')
 
 @login_required()
 def supprimer_commentaire(request, commentaire_id):
-    commentaire = Commentaire.objects.get(id=commentaire_id)
-    article = commentaire.article
+    try:
+        commentaire = Commentaire.objects.get(id=commentaire_id)
+        article = commentaire.article
+    except Commentaire.DoesNotExist:
+        logger.error(f"Tentative suppression commentaire inexistant ID {commentaire_id} par {request.user.username}")
+        messages.error(request, "Commentaire introuvable.")
+        return redirect('home')
 
     if request.user != article.auteur and not request.user.is_admin:
+        logger.warning(f"Utilisateur {request.user.username} non autorisé à supprimer commentaire ID {commentaire_id}")
         return HttpResponseForbidden("Vous n'êtes pas autorisé à supprimer ce commentaire.")
 
     if request.method == "POST":
         commentaire.delete()
+        logger.info(f"Commentaire ID {commentaire_id} supprimé par {request.user.username}")
         return redirect(article.get_absolute_url())
 
     return redirect(article.get_absolute_url())

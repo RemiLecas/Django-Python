@@ -1,3 +1,5 @@
+{% load i18n %}
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -33,7 +35,8 @@
     }
 
     input[type="text"],
-    input[type="password"] {
+    input[type="password"],
+    input[type="email"]{
       width: 100%;
       padding: 10px 14px;
       font-size: 1rem;
@@ -94,6 +97,9 @@
   {% csrf_token %}
   <label for="username">{% trans "Nom d’utilisateur :" %}</label>
   <input type="text" name="username" id="username" required />
+
+  <label for="username">{% trans "Adresse mail :" %}</label>
+  <input type="email" name="email" id="email" required />
 
   <label for="password1">{% trans "Mot de passe :" %}</label>
   <input type="password" name="password1" id="password1" required />
