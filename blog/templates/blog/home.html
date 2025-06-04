@@ -69,19 +69,16 @@
 </div>
 {% endif %}
 
-<section class="section popular-categories">
+<section class="section">
     <h2>{% trans "Catégories populaires" %}</h2>
-    <ul>
-        {% for cat in categories_populaires %}
-        <li>
+    <div class="articles-preview">
+        {% for cat in categories_populaires|slice:":4" %}
+        <div class="preview-card">
             {{ cat.nom }} <span class="count">({{ cat.nb_articles }})</span>
-        </li>
-        {% empty %}
-        <li>{% trans "Aucune catégorie populaire." %}</li>
+        </div>
         {% endfor %}
-    </ul>
+    </div>
 </section>
-
 
 <!-- Derniers articles -->
 <section class="section">
@@ -125,19 +122,19 @@
 
 <section class="section">
     <h2>{% trans "Auteurs populaires" %}</h2>
-    <ul>
-        {% for auteur in auteurs_populaires %}
-        <li>
+    <div class="articles-preview">
+        {% for auteur in auteurs_populaires|slice:":4" %}
+        <div class="preview-card">
             {{ auteur.username }} ({{ auteur.articles_publies_count }})
-        </li>
+        </div>
         {% endfor %}
-    </ul>
+    </div>
 </section>
 
 <!-- Liste complète paginée -->
 <section class="section">
 
-    <h2>{% trans "Tous les articles" %}</h2>
+    <h2>{% trans "Tous les articles" %} ({{ nb_articles }})</h2>
     {% include "blog/list-article.html" %}
 </section>
 

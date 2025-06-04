@@ -53,21 +53,23 @@ def home(request):
         .select_related('auteur') \
         .prefetch_related('categories', 'tags')
 
-    categorie_nom = ''
-    auteur_nom = ''
-    tag_nom = ''
+    if auteur_id:
+        auteur = CustomUser.objects.filter(id=auteur_id).first()
+        if auteur:
+            auteur_nom = auteur.get_full_name() or auteur.username
+            all_articles = all_articles.filter(auteur=auteur)
 
     if categorie_id:
         categorie = Categorie.objects.filter(id=categorie_id).first()
-        categorie_nom = categorie.nom if categorie else ''
-
-    if auteur_id:
-        auteur = CustomUser.objects.filter(id=auteur_id).first()
-        auteur_nom = auteur.get_full_name() or auteur.username if auteur else ''
+        if categorie:
+            categorie_nom = categorie.nom
+            all_articles = all_articles.filter(categories=categorie)
 
     if tag_id:
         tag = Tag.objects.filter(id=tag_id).first()
-        tag_nom = tag.nom if tag else ''
+        if tag:
+            tag_nom = tag.nom
+            all_articles = all_articles.filter(tags=tag)
 
     if date_min:
         all_articles = all_articles.filter(date_creation__gte=date_min)
@@ -105,6 +107,8 @@ def home(request):
         articles_publies_count=Count('article')
     ).order_by('-articles_publies_count')[:10]
 
+    nb_articles = all_articles.count()
+
     return render(request, 'blog/home.html', {
         'derniers_articles': derniers_articles,
         'articles_populaires': articles_populaires,
@@ -119,7 +123,8 @@ def home(request):
         'date_min': date_min,
         'date_max': date_max,
         'categories_populaires': categories_populaires,
-        'auteurs_populaires': auteurs_populaires
+        'auteurs_populaires': auteurs_populaires,
+        'nb_articles': nb_articles,
 
     })
 
