@@ -34,7 +34,14 @@
 
         <div class="card-footer">
           <span class="likes">❤️ {{ article.likes.count }}</span>
-          <span class="comments">💬 {% blocktrans count count=article.commentaires.count %}{{ count }} commentaire{% plural %}{{ count }} commentaires{% endblocktrans %}</span>
+          <span class="comments">
+            {% blocktrans count count=article.commentaires.count %}
+              💬 {{ count }} commentaire
+            {% plural %}
+              💬 {{ count }} commentaires
+            {% endblocktrans %}
+          </span>
+
           <span class="reading-time">⏱ {{ article.temps_lecture }} min de lecture</span>
         </div>
       </div>

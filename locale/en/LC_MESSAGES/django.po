@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-06-03 16:31+0200\n"
+"POT-Creation-Date: 2025-06-04 15:45+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: English <en@li.org>\n"
@@ -18,139 +18,204 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: .\blog\templates\blog\ajouter_article.html:4
-#: .\blog\templates\blog\ajouter_article.html:16
+#: .\blog\templates\blog\ajouter_article.html:11
+#: .\blog\templates\blog\ajouter_article.html:30
 #, fuzzy
 #| msgid "Liste des articles"
 msgid "Ajouter un article"
 msgstr "Add an article"
 
-#: .\blog\templates\blog\ajouter_article.html:22
-#: .\blog\templates\blog\modifier_article.html:98
+#: .\blog\templates\blog\ajouter_article.html:42
+#: .\blog\templates\blog\modifier_article.html:89
 msgid "Titre"
 msgstr "Title"
 
-#: .\blog\templates\blog\ajouter_article.html:27
-#: .\blog\templates\blog\modifier_article.html:104
+#: .\blog\templates\blog\ajouter_article.html:47
+#: .\blog\templates\blog\modifier_article.html:95
 msgid "Contenu"
 msgstr "Content"
 
-#: .\blog\templates\blog\ajouter_article.html:32
+#: .\blog\templates\blog\ajouter_article.html:57
 msgid "Catégories"
 msgstr "Categories"
 
-#: .\blog\templates\blog\ajouter_article.html:37
+#: .\blog\templates\blog\ajouter_article.html:62
+#: .\blog\templates\blog\modifier_article.html:104
 msgid "Image"
 msgstr "Image"
 
-#: .\blog\templates\blog\ajouter_article.html:42
+#: .\blog\templates\blog\ajouter_article.html:67
+#: .\blog\templates\blog\modifier_article.html:109
+msgid "Tags"
+msgstr ""
+
+#: .\blog\templates\blog\ajouter_article.html:71
 msgid "Enregistrer"
 msgstr "Save"
 
-#: .\blog\templates\blog\ajouter_article.html:43
+#: .\blog\templates\blog\ajouter_article.html:72
 msgid "Annuler"
 msgstr "Cancel"
 
-#: .\blog\templates\blog\dashboard.html:6 .\blog\templates\blog\header.html:42
-msgid "Tableau de bord"
-msgstr "Dashboard"
-
-#: .\blog\templates\blog\dashboard.html:11
+#: .\blog\templates\blog\dashboard.html:14
 #, python-format
-msgid "\n    Bienvenue sur ton dashboard, %(username)s !\n    "
-msgstr "\n    Welcome to your dashboard, %(username)s!\n    "
+msgid ""
+"\n"
+"    Bienvenue sur ton dashboard, %(username)s !\n"
+"    "
+msgstr ""
+"\n"
+"    Welcome to your dashboard, %(username)s!\n"
+"    "
 
-#: .\blog\templates\blog\dashboard.html:15
+#: .\blog\templates\blog\dashboard.html:18
 msgid "Contenu de ton dashboard ici."
 msgstr "Your dashboard content here."
 
-#: .\blog\templates\blog\dashboard.html:18
+#: .\blog\templates\blog\dashboard.html:21
 msgid "Créer un article"
 msgstr "Create an article"
 
-#: .\blog\templates\blog\dashboard.html:27
+#: .\blog\templates\blog\dashboard.html:24
+msgid "Mes articles en favoris"
+msgstr ""
+
+#: .\blog\templates\blog\dashboard.html:33
+#: .\blog\templates\blog\details_article.html:44
+msgid "Retirer des favoris"
+msgstr ""
+
+#: .\blog\templates\blog\dashboard.html:40
+#, fuzzy
+#| msgid "Vous n'avez aucun brouillon."
+msgid "Vous n'avez aucun article en favoris."
+msgstr "You have no drafts."
+
+#: .\blog\templates\blog\dashboard.html:43
+msgid "Mes brouillons"
+msgstr ""
+
+#: .\blog\templates\blog\dashboard.html:50
 msgid "Voulez-vous vraiment publier cet article ?"
 msgstr "Are you sure you want to publish this article?"
 
-#: .\blog\templates\blog\dashboard.html:28
+#: .\blog\templates\blog\dashboard.html:51
 msgid "Publier"
 msgstr "Publish"
 
-#: .\blog\templates\blog\dashboard.html:32
+#: .\blog\templates\blog\dashboard.html:55
 msgid "Modifier"
 msgstr "Edit"
 
-#: .\blog\templates\blog\dashboard.html:36
+#: .\blog\templates\blog\dashboard.html:59
 msgid "Voulez-vous vraiment supprimer cet article ?"
 msgstr "Are you sure you want to delete this article?"
 
-#: .\blog\templates\blog\dashboard.html:37
-#: .\blog\templates\blog\details_article.html:140
+#: .\blog\templates\blog\dashboard.html:60
+#: .\blog\templates\blog\details_article.html:94
 msgid "Supprimer"
 msgstr "Delete"
 
-#: .\blog\templates\blog\dashboard.html:43
+#: .\blog\templates\blog\dashboard.html:66
 msgid "Vous n'avez aucun brouillon."
 msgstr "You have no drafts."
 
-#: .\blog\templates\blog\dashboard.html:47
-#: .\blog\templates\blog\details_article.html:126
-msgid "Retour à l'accueil"
-msgstr "Back to home"
-
-#: .\blog\templates\blog\details_article.html:106
+#: .\blog\templates\blog\details_article.html:24
 msgid "Publié le :"
 msgstr "Published on:"
 
-#: .\blog\templates\blog\details_article.html:109
-#: .\blog\templates\blog\modifier_article.html:111
+#: .\blog\templates\blog\details_article.html:25
+#, fuzzy
+#| msgid "Modifier"
+msgid "Modifié le :"
+msgstr "Edit"
+
+#: .\blog\templates\blog\details_article.html:32
+msgid "Unlike"
+msgstr ""
+
+#: .\blog\templates\blog\details_article.html:34
+msgid "Like"
+msgstr ""
+
+#: .\blog\templates\blog\details_article.html:37
+msgid "like(s)"
+msgstr ""
+
+#: .\blog\templates\blog\details_article.html:46
+#, fuzzy
+#| msgid "Liste des articles"
+msgid "Ajouter aux favoris"
+msgstr "Add an article"
+
+#: .\blog\templates\blog\details_article.html:49
+msgid "favori(s)"
+msgstr ""
+
+#: .\blog\templates\blog\details_article.html:52
+#: .\blog\templates\blog\details_article.html:113
+msgid "Connectez-vous"
+msgstr "Log in"
+
+#: .\blog\templates\blog\details_article.html:52
+#, fuzzy
+#| msgid "Voulez-vous vraiment supprimer cet article ?"
+msgid "pour liker ou enregistrer cet article."
+msgstr "Are you sure you want to delete this article?"
+
+#: .\blog\templates\blog\details_article.html:56
+#: .\blog\templates\blog\modifier_article.html:99
 msgid "Catégories :"
 msgstr "Categories:"
 
-#: .\blog\templates\blog\details_article.html:118
+#: .\blog\templates\blog\details_article.html:63
+msgid "Tags :"
+msgstr ""
+
+#: .\blog\templates\blog\details_article.html:72
 #, fuzzy
 #| msgid "Liste des articles"
 msgid "Modifier cet article"
 msgstr "Edit this article"
 
-#: .\blog\templates\blog\details_article.html:119
+#: .\blog\templates\blog\details_article.html:73
 msgid "Êtes-vous sûr de vouloir supprimer cet article ?"
 msgstr "Are you sure you want to delete this article?"
 
-#: .\blog\templates\blog\details_article.html:121
+#: .\blog\templates\blog\details_article.html:75
 msgid "Supprimer l'article"
 msgstr "Delete the article"
 
-#: .\blog\templates\blog\details_article.html:128
+#: .\blog\templates\blog\details_article.html:80
+msgid "Retour à l'accueil"
+msgstr "Back to home"
+
+#: .\blog\templates\blog\details_article.html:82
 #, python-format
 msgid "Commentaires (%(commentaires.count)s)"
 msgstr "Comments (%(commentaires.count)s)"
 
-#: .\blog\templates\blog\details_article.html:138
+#: .\blog\templates\blog\details_article.html:92
 msgid "Voulez-vous vraiment supprimer ce commentaire ?"
 msgstr "Are you sure you want to delete this comment?"
 
-#: .\blog\templates\blog\details_article.html:146
+#: .\blog\templates\blog\details_article.html:100
 msgid "Aucun commentaire pour l'instant."
 msgstr "No comments yet."
 
-#: .\blog\templates\blog\details_article.html:151
+#: .\blog\templates\blog\details_article.html:105
 msgid "Ajouter un commentaire"
 msgstr "Add a comment"
 
-#: .\blog\templates\blog\details_article.html:154
+#: .\blog\templates\blog\details_article.html:108
 msgid "Votre commentaire..."
 msgstr "Your comment..."
 
-#: .\blog\templates\blog\details_article.html:156
+#: .\blog\templates\blog\details_article.html:110
 msgid "Envoyer"
 msgstr "Send"
 
-#: .\blog\templates\blog\details_article.html:159
-msgid "Connectez-vous"
-msgstr "Log in"
-
-#: .\blog\templates\blog\details_article.html:159
+#: .\blog\templates\blog\details_article.html:113
 msgid "pour ajouter un commentaire."
 msgstr "to add a comment."
 
@@ -162,107 +227,210 @@ msgstr "Django Blog"
 msgid "Accueil"
 msgstr "Home"
 
-#: .\blog\templates\blog\header.html:13
+#: .\blog\templates\blog\header.html:9
+msgid "Articles"
+msgstr ""
+
+#: .\blog\templates\blog\header.html:15
 msgid "Changer le thème"
 msgstr "Change theme"
 
-#: .\blog\templates\blog\header.html:21
+#: .\blog\templates\blog\header.html:23
 msgid "Français"
 msgstr "French"
 
-#: .\blog\templates\blog\header.html:24
+#: .\blog\templates\blog\header.html:26
 msgid "Anglais"
 msgstr "English"
 
-#: .\blog\templates\blog\header.html:27
+#: .\blog\templates\blog\header.html:29
 msgid "Espagnol"
 msgstr "Spanish"
 
-#: .\blog\templates\blog\header.html:30
+#: .\blog\templates\blog\header.html:32
 msgid "Allemand"
 msgstr "German"
 
-#: .\blog\templates\blog\header.html:38
-#, python-format
-msgid "\n                    Bonjour %(username)s\n                "
-msgstr "\n                    Hello %(username)s\n                "
+#: .\blog\templates\blog\header.html:35
+msgid "Japonais"
+msgstr ""
 
-#: .\blog\templates\blog\header.html:43
+#: .\blog\templates\blog\header.html:42
+#, fuzzy, python-format
+#| msgid ""
+#| "\n"
+#| "                    Bonjour %(username)s\n"
+#| "                "
+msgid ""
+"\n"
+"                    %(username)s\n"
+"                "
+msgstr ""
+"\n"
+"                    Hello %(username)s\n"
+"                "
+
+#: .\blog\templates\blog\header.html:46
+msgid "Tableau de bord"
+msgstr "Dashboard"
+
+#: .\blog\templates\blog\header.html:47
 msgid "Déconnexion"
 msgstr "Logout"
 
-#: .\blog\templates\blog\header.html:45
+#: .\blog\templates\blog\header.html:49 .\blog\templates\blog\login.html:7
+#: .\blog\templates\blog\login.html:96
 msgid "Connexion"
 msgstr "Login"
 
-#: .\blog\templates\blog\list-article.html:7
-#, python-format
+#: .\blog\templates\blog\home.html:23
+msgid "Rechercher par titre, contenu, auteur..."
+msgstr "Search by title, content, author..."
+
+#: .\blog\templates\blog\home.html:27
+msgid "Toutes les catégories"
+msgstr "All categories"
+
+#: .\blog\templates\blog\home.html:37
+msgid "Tous les tags"
+msgstr "All tags"
+
+#: .\blog\templates\blog\home.html:51
+msgid "Rechercher"
+msgstr "Search"
+
+#: .\blog\templates\blog\home.html:59
+msgid "Filtres actifs"
+msgstr "Active filters"
+
+#: .\blog\templates\blog\home.html:65
+msgid "Depuis"
+msgstr "From"
+
+#: .\blog\templates\blog\home.html:66
+msgid "Jusqu’à"
+msgstr "Until"
+
+#: .\blog\templates\blog\home.html:67
+msgid "Réinitialiser"
+msgstr "Reset"
+
+#: .\blog\templates\blog\home.html:74
+msgid "Derniers articles"
+msgstr "Latest articles"
+
+#: .\blog\templates\blog\home.html:82
+msgid "Aucun article récent."
+msgstr "No recent articles."
+
+#: .\blog\templates\blog\home.html:89
+msgid "Articles populaires"
+msgstr "Popular articles"
+
+#: .\blog\templates\blog\home.html:97
+msgid "Aucun article populaire."
+msgstr "No popular articles."
+
+#: .\blog\templates\blog\home.html:104
+msgid "Tags populaires"
+msgstr "Popular tags"
+
+#: .\blog\templates\blog\home.html:115
+msgid "Tous les articles"
+msgstr "All articles"
+
+#: .\blog\templates\blog\home.html:122
+msgid "Précédent"
+msgstr "Previous"
+
+#: .\blog\templates\blog\home.html:124
+msgid "Page"
+msgstr "Page"
+
+#: .\blog\templates\blog\home.html:124
+msgid "sur"
+msgstr "of"
+
+#: .\blog\templates\blog\home.html:126
+msgid "Suivant"
+msgstr "Next"
+
+#: .\blog\templates\blog\list-article.html:9
 msgid "Image de %(article.titre)s"
 msgstr "Image of %(article.titre)s"
 
-#: .\blog\templates\blog\list-article.html:14
-#, python-format
+#: .\blog\templates\blog\list-article.html:16
 msgid "%(count)s vue"
 msgid_plural "%(count)s vues"
 msgstr[0] "%(count)s view"
 msgstr[1] "%(count)s views"
 
-#: .\blog\templates\blog\list-article.html:28
-#, python-format
-msgid "%(count)s commentaire"
-msgid_plural "%(count)s commentaires"
-msgstr[0] "%(count)s comment"
-msgstr[1] "%(count)s comments"
+#: .\blog\templates\blog\list-article.html:38
+msgid "\n              💬 %(count)s commentaire\n            "
+msgid_plural "\n              💬 %(count)s commentaires\n            "
+msgstr[0] "\n              💬 %(count)s comment\n            "
+msgstr[1] "\n              💬 %(count)s comments\n            "
 
-#: .\blog\templates\blog\list-article.html:35
+#: .\blog\templates\blog\list-article.html:52
 msgid "Aucun article disponible."
 msgstr "No articles available."
 
-#: .\blog\templates\blog\modifier_article.html:93
-#, python-format
-msgid "Modifier l'article : %(titre)s"
-msgstr "Edit the article: %(titre)s"
-
-#: .\blog\templates\blog\modifier_article.html:101
-msgid "Image (optionnel)"
-msgstr "Image (optional)"
-
-#: .\blog\templates\blog\modifier_article.html:107
-msgid "Commentaire"
-msgstr "Comment"
-
-#: .\blog\templates\blog\modifier_article.html:115
-msgid "Enregistrer les modifications"
-msgstr "Save changes"
-
-#: .\blog\templates\blog\modifier_article.html:118
-msgid "Retour à l'article"
-msgstr "Back to the article"
-
-#: .\blog\templates\blog\register.html:91
-msgid "Inscription"
-msgstr "Register"
-
-#: .\blog\templates\blog\register.html:95
+#: .\blog\templates\blog\login.html:99 .\blog\templates\blog\register.html:98
 msgid "Nom d’utilisateur :"
 msgstr "Username:"
 
-#: .\blog\templates\blog\register.html:98
+#: .\blog\templates\blog\login.html:102 .\blog\templates\blog\register.html:104
 msgid "Mot de passe :"
 msgstr "Password:"
 
+#: .\blog\templates\blog\login.html:105 .\blog\templates\blog\register.html:127
+msgid "Se connecter"
+msgstr "Log in"
+
+#: .\blog\templates\blog\login.html:107
+msgid "Mot de passe oublié ?"
+msgstr "Forgot password?"
+
+#: .\blog\templates\blog\login.html:109
+msgid "Pas encore inscrit ?"
+msgstr "Not registered yet?"
+
+#: .\blog\templates\blog\login.html:109
+msgid "Créer un compte"
+msgstr "Create an account"
+
+#: .\blog\templates\blog\modifier_article.html:84
+msgid "Modifier l'article : %(titre)s"
+msgstr "Edit the article: %(titre)s"
+
+#: .\blog\templates\blog\modifier_article.html:92
+msgid "Image (optionnel)"
+msgstr "Image (optional)"
+
+#: .\blog\templates\blog\modifier_article.html:113
+msgid "Enregistrer les modifications"
+msgstr "Save changes"
+
+#: .\blog\templates\blog\modifier_article.html:116
+msgid "Retour à l'article"
+msgstr "Back to the article"
+
+#: .\blog\templates\blog\register.html:94
+msgid "Inscription"
+msgstr "Register"
+
 #: .\blog\templates\blog\register.html:101
+msgid "Adresse mail :"
+msgstr "Email address:"
+
+#: .\blog\templates\blog\register.html:107
 msgid "Confirmer le mot de passe :"
 msgstr "Confirm password:"
 
-#: .\blog\templates\blog\register.html:117
+#: .\blog\templates\blog\register.html:123
 msgid "S’inscrire"
 msgstr "Sign up"
 
-#: .\blog\templates\blog\register.html:120
+#: .\blog\templates\blog\register.html:126
 msgid "Déjà un compte ?"
 msgstr "Already have an account?"
-
-#: .\blog\templates\blog\register.html:121
-msgid "Se connecter"
-msgstr "Log in"
