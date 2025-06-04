@@ -1,5 +1,5 @@
 {% load i18n %}
-
+{% load humanize %}
 <div class="articles-container">
   {% for article in articles %}
   {% if article.statut == "published" %}
@@ -12,7 +12,7 @@
       <div class="card-content">
         <div class="card-meta">
           <span class="author">👤 {{ article.auteur.username }}</span>
-          <span class="date">📅 {{ article.date_creation|date:"d M Y" }}</span>
+          <span class="date">📅 {{ article.date_creation|naturaltime }}</span>
           <span class="views">👁 {% blocktrans count count=article.vues %}{{ count }} vue{% plural %}{{ count }} vues{% endblocktrans %}</span>
         </div>
 
