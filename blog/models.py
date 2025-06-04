@@ -19,6 +19,18 @@ class CustomUser(AbstractUser):
     is_admin = models.BooleanField(default=False)
     bookmarks = models.ManyToManyField('Article', related_name='bookmarked_by', blank=True)
 
+    @property
+    def role(self):
+        if self.is_admin:
+            return 'admin'
+        elif self.is_editor:
+            return 'editor'
+        elif self.is_author:
+            return 'author'
+        elif self.is_reader:
+            return 'reader'
+        return 'reader'
+
 class Categorie(models.Model):
     nom = models.CharField(max_length=100, unique=True)
     description = models.TextField(blank=True)
