@@ -21,7 +21,7 @@ from django.core.paginator import Paginator
 import logging
 logger = logging.getLogger('app')
 from functools import wraps
-from django.db.models import Q, Count
+from django.db.models import Q, Count,Sum
 
 def role_required(min_role):
     roles_hierarchy = ['reader', 'author', 'editor', 'admin']
@@ -40,8 +40,6 @@ def role_required(min_role):
             return HttpResponseForbidden("Accès refusé.")
         return _wrapped_view
     return decorator
-
-
 
 def home(request):
     query = request.GET.get('q', '')
@@ -99,6 +97,14 @@ def home(request):
     auteurs = CustomUser.objects.filter(article__statut='published').distinct()
     tags = Tag.objects.annotate(article_count=Count('articles')).filter(article_count__gt=0).order_by('-article_count')[:20]
 
+    categories_populaires = Categorie.objects.annotate(nb_articles=Count('articles')) \
+                                 .filter(nb_articles__gt=0) \
+                                 .order_by('-nb_articles')[:5]
+
+    auteurs_populaires = CustomUser.objects.annotate(
+        articles_publies_count=Count('article')
+    ).order_by('-articles_publies_count')[:10]
+
     return render(request, 'blog/home.html', {
         'derniers_articles': derniers_articles,
         'articles_populaires': articles_populaires,
@@ -112,11 +118,13 @@ def home(request):
         'query': query,
         'date_min': date_min,
         'date_max': date_max,
+        'categories_populaires': categories_populaires,
+        'auteurs_populaires': auteurs_populaires
+
     })
 
 
 @login_required
-@role_required('author')
 def ajouter_article(request):
     if request.method == 'POST':
         form = ArticleForm(request.POST, request.FILES)
@@ -237,17 +245,34 @@ def logout_view(request):
     logout(request)
     return redirect('home')
 
+
 @login_required
 def dashboard_view(request):
-    brouillons = Article.objects.filter(auteur=request.user, statut='draft').order_by('-date_creation')
-    bookmarks = request.user.bookmarked_articles.all()
-    return render(request, 'blog/dashboard.html', {
-        'user': request.user,
-        'brouillons': brouillons,
+    user = request.user
+
+    articles = Article.objects.filter(auteur=user, statut='published') \
+        .annotate(nb_likes=Count('likes', distinct=True), nb_comments=Count('commentaires', distinct=True))
+
+    nb_articles = articles.count()
+    total_vues = articles.aggregate(total=Sum('vues'))['total'] or 0
+    total_likes = articles.aggregate(total=Sum('nb_likes'))['total'] or 0
+    total_comments = articles.aggregate(total=Sum('nb_comments'))['total'] or 0
+
+    bookmarks = user.bookmarks.all()
+
+    brouillons = Article.objects.filter(auteur=user, statut='draft')
+
+    context = {
+        'user': user,
+        'nb_articles': nb_articles,
+        'total_vues': total_vues,
+        'total_likes': total_likes,
+        'total_comments': total_comments,
         'bookmarks': bookmarks,
+        'brouillons': brouillons,
+    }
 
-    })
-
+    return render(request, 'blog/dashboard.html', context)
 @login_required()
 def publier_article(request, article_id):
     try:
@@ -281,7 +306,6 @@ def supprimer_commentaire(request, commentaire_id):
         return redirect(article.get_absolute_url())
 
     return redirect(article.get_absolute_url())
-
 
 @receiver(post_save, sender=Article)
 @receiver(post_delete, sender=Article)
@@ -321,12 +345,10 @@ def toggle_bookmark(request, slug):
 def articles_view(request):
     categorie_id = request.GET.get('categorie')
 
-    # Récupérer catégories avec compte d'articles publiés
     categories = Categorie.objects.annotate(
         published_count=Count('articles', filter=Q(articles__statut='published'))
     ).order_by('-published_count', 'nom')
 
-    # Récupérer articles publiés, filtrés si catégorie sélectionnée
     articles = Article.objects.filter(statut='published')
     if categorie_id:
         articles = articles.filter(categories__id=categorie_id)

@@ -3,23 +3,98 @@
 <head>
     <meta charset="UTF-8">
     {% load static %}
-
     <link rel="stylesheet" href="{% static 'blog/style.css' %}">
     <link rel="stylesheet" href="{% static 'blog/header.css' %}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
+    <style>
+        .stats-container {
+            display: flex;
+            gap: 20px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        .stat-card {
+            background: #f5f7fa;
+            border-radius: 8px;
+            padding: 20px;
+            flex: 1 1 200px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        .stat-card h3 {
+            margin-bottom: 10px;
+            font-size: 18px;
+            color: #555;
+        }
+        .stat-card .number {
+            font-size: 32px;
+            font-weight: bold;
+            color: #007cba;
+        }
+    </style>
 </head>
 {% include "blog/header.html" %}
 
-<h1>
-    {% blocktrans with username=user.username %}
-    Bienvenue sur ton dashboard, {{ username }} !
-    {% endblocktrans %}
-</h1>
-<p>{% trans "Contenu de ton dashboard ici." %}</p>
+<h1>{% blocktrans with username=user.username %}Bienvenue sur ton dashboard, {{ username }} !{% endblocktrans %}</h1>
+
+<div class="stats-container">
+    <div class="stat-card">
+        <h3>{% trans "Articles publiés" %}</h3>
+        <div class="number">{{ nb_articles }}</div>
+    </div>
+    <div class="stat-card">
+        <h3>{% trans "Vues totales" %}</h3>
+        <div class="number">{{ total_vues }}</div>
+    </div>
+    <div class="stat-card">
+        <h3>{% trans "Likes reçus" %}</h3>
+        <div class="number">{{ total_likes }}</div>
+    </div>
+    <div class="stat-card">
+        <h3>{% trans "Commentaires générés" %}</h3>
+        <div class="number">{{ total_comments }}</div>
+    </div>
+</div>
+<div style="width: 400px; height: 400px">
+    <canvas id="statsChart" width="400" height="200"></canvas>
+</div>
+
+<script>
+    const ctx = document.getElementById('statsChart').getContext('2d');
+    const statsChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['Articles', 'Vues', 'Likes', 'Commentaires'],
+            datasets: [{
+                label: 'Vos performances',
+                data: [{{ nb_articles }}, {{ total_vues }}, {{ total_likes }}, {{ total_comments }}],
+    backgroundColor: [
+        'rgba(0, 124, 186, 0.7)',
+        'rgba(54, 162, 235, 0.7)',
+        'rgba(255, 206, 86, 0.7)',
+        'rgba(75, 192, 192, 0.7)'
+    ],
+        borderColor: [
+        'rgba(0, 124, 186, 1)',
+        'rgba(54, 162, 235, 1)',
+        'rgba(255, 206, 86, 1)',
+        'rgba(75, 192, 192, 1)'
+    ],
+        borderWidth: 1
+    }]
+    },
+    options: {
+        scales: { y: { beginAtZero: true } }
+    }
+    });
+</script>
 
 <form action="{% url 'ajouter_article' %}" method="get" style="display:inline;">
     <button type="submit">{% trans "Créer un article" %}</button>
 </form>
+
+<!-- Tes sections favoris et brouillons inchangées -->
 
 <h2>{% trans "Mes articles en favoris" %}</h2>
 {% if bookmarks %}
@@ -65,4 +140,5 @@
 {% else %}
 <p>{% trans "Vous n'avez aucun brouillon." %}</p>
 {% endif %}
+
 {% endblock %}
