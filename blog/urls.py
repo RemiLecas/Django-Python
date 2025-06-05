@@ -27,6 +27,7 @@ urlpatterns = [
     path('article/<slug:slug>/bookmark/', views.bookmark_article, name='bookmark_article'),
     path('bookmark/toggle/<slug:slug>/', views.toggle_bookmark, name='toggle_bookmark'),
     path('articles/', views.articles_view, name='articles'),
+    path('generer-article-chatgpt/', views.generer_article_chatgpt, name='generer_article_chatgpt'),
 
 ]
 

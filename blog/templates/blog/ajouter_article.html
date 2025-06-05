@@ -22,6 +22,78 @@
         }
 
     </style>
+
+    <script>
+        function toggleForms() {
+            const checked = document.getElementById("genererAvecChatgpt").checked;
+            document.getElementById("formAuto").style.display = checked ? "block" : "none";
+            document.getElementById("formManuel").style.display = checked ? "none" : "block";
+        }
+    </script>
+    <script>
+        function genererArticle(event) {
+            const titre = document.getElementById("description_article").value.trim();
+            if (!titre) {
+            alert("Merci d'entrer un titre !");
+            return;
+        }
+
+            document.getElementById("chargement").style.display = "block";
+            document.getElementById("articleGenere").style.display = "none";
+
+            fetch("{% url 'generer_article_chatgpt' %}", {
+            method: "POST",
+            headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": document.querySelector('[name=csrfmiddlewaretoken]').value,
+        },
+            body: JSON.stringify({titre: titre})
+        })
+            .then(response => response.json())
+            .then(data => {
+            document.getElementById("chargement").style.display = "none";
+
+            if (data.error) {
+            alert("Erreur : " + data.error);
+            return;
+        }
+
+            // Affichage visible
+            document.getElementById("articleTitre").textContent = titre;
+            document.getElementById("articleImage").src = data.image_url;
+            document.getElementById("articleContenu").textContent = data.contenu;
+            document.getElementById("articleGenere").style.display = "block";
+
+            // 🎯 Injection dans les champs de formulaire Django
+            document.getElementById("id_titre").value = titre;
+            document.getElementById("id_contenu").value = data.contenu;
+
+            // Pour image si gérée par URL (sinon, à voir avec un champ d'upload)
+            // Si l’image est téléchargée plus tard par toi, tu peux l’ignorer ici
+
+            // Catégorie (supposée en <select>)
+            const catSelect = document.getElementById("id_categories");
+            if (catSelect && data.categorie) {
+            Array.from(catSelect.options).forEach(opt => {
+            opt.selected = (opt.text === data.categorie);
+        });
+        }
+
+            // Tags (supposés en <select multiple>)
+            const tagSelect = document.getElementById("id_tags");
+            if (tagSelect && data.tags) {
+            Array.from(tagSelect.options).forEach(opt => {
+            opt.selected = data.tags.includes(opt.text);
+        });
+        }
+        })
+            .catch(err => {
+            console.error(err);
+            alert("Une erreur est survenue.");
+            document.getElementById("chargement").style.display = "none";
+        });
+        }
+    </script>
 </head>
 <body>
 {% include "blog/header.html" %}
@@ -31,45 +103,64 @@
 
     <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
-
-        {% if form.non_field_errors %}
-        <div class="error">
-            {{ form.non_field_errors }}
-        </div>
-        {% endif %}
-
         <div class="form-group">
-            <label for="{{ form.titre.id_for_label }}">{% trans "Titre" %} :</label>
-            {{ form.titre }}
+            <label>
+                <input type="checkbox" id="genererAvecChatgpt" name="generer_avec_chatgpt" onchange="toggleForms()">
+                Générer un article automatiquement
+            </label>
         </div>
 
-        <div class="form-group">
-            <label for="{{ form.contenu.id_for_label }}">{% trans "Contenu" %} :</label>
-            {{ form.contenu }}
-            {% if form.contenu.errors %}
-            <div class="error">
-                {{ form.contenu.errors }}
+        <div id="formAuto" style="display:none;">
+            <div class="form-group">
+                <label for="description_article">{% trans "Quel article veux-tu ?" %}</label>
+                <input type="text" name="description_article" id="description_article"
+                       placeholder="Ex : Comment faire un potager en ville">
             </div>
-            {% endif %}
+            <button type="button" onclick="genererArticle(event)">🧠 Générer</button>
+
+            <div id="articleGenere" style="margin-top: 30px; display: none;">
+                <h2>📝 Article généré :</h2>
+                <h3 id="articleTitre"></h3>
+                <img id="articleImage" src="" alt="Image générée" style="max-width: 100%; margin: 15px 0;"/>
+                <p id="articleContenu" style="white-space: pre-line;"></p>
+            </div>
+
+            <div id="chargement" style="display: none; margin-top: 20px;">
+                ⏳ L'article est en cours de génération...
+            </div>
         </div>
 
-        <div class="form-group">
-            <label for="{{ form.categories.id_for_label }}">{% trans "Catégories" %} :</label>
-            {{ form.categories }}
+
+        <!-- Formulaire classique -->
+        <div id="formManuel">
+            <div class="form-group">
+                <label for="{{ form.titre.id_for_label }}">{% trans "Titre" %} :</label>
+                {{ form.titre }}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.contenu.id_for_label }}">{% trans "Contenu" %} :</label>
+                {{ form.contenu }}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.image.id_for_label }}">{% trans "Image" %} :</label>
+                {{ form.image }}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.categories.id_for_label }}">{% trans "Catégories" %} :</label>
+                {{ form.categories }}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.tags.id_for_label }}">{% trans "Tags" %} :</label>
+                {{ form.tags }}
+            </div>
         </div>
 
-        <div class="form-group">
-            <label for="{{ form.image.id_for_label }}">{% trans "Image" %} :</label>
-            {{ form.image }}
-        </div>
-
-        <div class="form-group">
-            <label for="{{ form.categories.id_for_label }}">{% trans "Tags" %} :</label>
-            {{ form.tags }}
-        </div>
         <div class="form-group">
             <button type="submit" class="btn">✅ {% trans "Enregistrer" %}</button>
-            <a href="{% url 'home' %}" class="btn btn-secondary">↩️ {% trans "Annuler" %}</a>
         </div>
     </form>
 </div>

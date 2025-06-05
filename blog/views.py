@@ -1,19 +1,17 @@
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, redirect
-from django.http import HttpResponse, HttpResponseForbidden
+import requests
+from django.shortcuts import render
+from django.http import HttpResponseForbidden
 from django.contrib import messages
 from .models import Article, Categorie, Commentaire, Tag, CustomUser, Bookmark
 from .forms import ArticleForm, CustomUserCreationForm
-from django.utils.translation import gettext as _
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import login, logout
 from django.contrib.auth.forms import AuthenticationForm
-from django.db.models import Q
 from django.contrib.auth.views import PasswordResetView
 from django.urls import reverse_lazy
 from django.contrib.messages.views import SuccessMessageMixin
 from django.db.models.signals import post_save, post_delete, m2m_changed
 from django.dispatch import receiver
-from django.db.models import Count
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
 from django.views.decorators.http import require_POST
@@ -22,6 +20,11 @@ import logging
 logger = logging.getLogger('app')
 from functools import wraps
 from django.db.models import Q, Count,Sum
+from django.conf import settings
+OPENAI_API_KEY = settings.OPENAI_API_KEY
+from django.views.decorators.csrf import csrf_exempt
+from django.http import JsonResponse
+import json
 
 def role_required(min_role):
     roles_hierarchy = ['reader', 'author', 'editor', 'admin']
@@ -129,10 +132,12 @@ def home(request):
     })
 
 
+
 @login_required
 def ajouter_article(request):
     if request.method == 'POST':
         form = ArticleForm(request.POST, request.FILES)
+
         if form.is_valid():
             article = form.save(commit=False)
             article.auteur = request.user
@@ -371,6 +376,52 @@ def articles_view(request):
         'articles': page_articles,
     })
 
+@login_required
+def generer_article_chatgpt(request):
+    if request.method == "POST":
+        data = json.loads(request.body)
+        titre = data.get("titre", "")
+        if not titre:
+            return JsonResponse({"error": "Titre manquant."}, status=400)
+
+        contenu, image_url = generer_contenu_et_image(titre)
+        return JsonResponse({
+            "contenu": contenu,
+            "image_url": image_url
+        })
+    return JsonResponse({"error": "Méthode non autorisée."}, status=405)
+
+def generer_contenu_et_image(titre):
+    # Générer contenu via ChatGPT
+    prompt = f"Rédige un article sur : {titre}"
+    response = requests.post(
+        "https://api.openai.com/v1/chat/completions",
+        headers={"Authorization": f"Bearer {OPENAI_API_KEY}", "Content-Type": "application/json"},
+        json={
+            "model": "gpt-3.5-turbo",
+            "messages": [{"role": "user", "content": prompt}],
+        }
+    )
+    contenu = ""
+    if response.status_code == 200:
+        contenu = response.json()["choices"][0]["message"]["content"]
+    else:
+        contenu = "Erreur lors de la génération du contenu."
+
+    # Générer image via DALL·E
+    image_prompt = f"Illustration pour : {titre}"
+    img_response = requests.post(
+        "https://api.openai.com/v1/images/generations",
+        headers={"Authorization": f"Bearer {OPENAI_API_KEY}", "Content-Type": "application/json"},
+        json={"prompt": image_prompt, "n": 1, "size": "512x512"}
+    )
+    image_url = ""
+    if img_response.status_code == 200:
+        image_url = img_response.json()["data"][0]["url"]
+    else:
+        image_url = ""
+
+    return contenu, image_url
 class CustomPasswordResetView(SuccessMessageMixin, PasswordResetView):
     template_name = 'registration/custom_password_reset.html'
     email_template_name = 'registration/password_reset_email.html'
