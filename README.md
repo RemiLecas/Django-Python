@@ -13,8 +13,15 @@ Pour désactiver l’environnement virtuel, tapez simplement :
 ``deactivate``
 
 ## 2. Initialiser la base de données avec des données par défaut
-Avant de pouvoir initialiser les données automatiquement dans la base de données il faut modifier le .env avec les valeurs indiqué dans ce meme fichier. Une fois cela fais on peut peupler notre base de données
+Avant de pouvoir initialiser les données automatiquement dans la base de données il faut modifier le .env avec les valeurs indiqué dans ce meme fichier.
 
+Quand vous avez créer votre base de données et rentré les informations nécessaire dans le .env il faudra exécuté ces 2 commandes
+``python manage.py makemigrations``
+puis
+``python manage.py migrate``
+Cela aura pour conséquence d'instancié les tables de la BDD.
+
+Une fois cela fais on peut peupler notre base de données.
 Pour peupler la base avec les catégories, tags et utilisateurs par défaut, exécutez la commande personnalisée Django dans le projet :
 ``python manage.py init_data``
 
