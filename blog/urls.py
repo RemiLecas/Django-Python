@@ -28,7 +28,6 @@ urlpatterns = [
     path('bookmark/toggle/<slug:slug>/', views.toggle_bookmark, name='toggle_bookmark'),
     path('articles/', views.articles_view, name='articles'),
 
-
 ]
 
 if settings.DEBUG:

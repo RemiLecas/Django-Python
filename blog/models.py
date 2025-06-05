@@ -51,7 +51,6 @@ class Categorie(models.Model):
         return reverse('category_detail', kwargs={'slug': self.slug})
 
     def save(self, *args, **kwargs):
-        # Génère le slug automatiquement si absent
         if not self.slug:
             self.slug = slugify(self.nom)
         super().save(*args, **kwargs)
@@ -133,21 +132,19 @@ class Article(models.Model):
     def toggle_like(self, user):
         if user in self.likes.all():
             self.likes.remove(user)
-            return False  # unlike
+            return False
         else:
             self.likes.add(user)
-            return True  # like
+            return True
 
-    # méthode pratique pour toggler les bookmarks
     def toggle_bookmark(self, user):
         if user in self.bookmarks.all():
             self.bookmarks.remove(user)
-            return False  # unbookmark
+            return False
         else:
             self.bookmarks.add(user)
-            return True  # bookmark
+            return True
 
-    # compteur bookmark
     def total_bookmarks(self):
         return self.bookmarks.count()
 
@@ -162,3 +159,11 @@ class Commentaire(models.Model):
 
     def __str__(self):
         return f'Commentaire de {self.auteur} sur {self.article}'
+
+
+class Bookmark(models.Model):
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    article = models.ForeignKey(Article, on_delete=models.CASCADE)
+
+    class Meta:
+        unique_together = ('user', 'article')

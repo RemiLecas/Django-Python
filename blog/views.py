@@ -2,7 +2,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpResponseForbidden
 from django.contrib import messages
-from .models import Article, Categorie, Commentaire, Tag, CustomUser
+from .models import Article, Categorie, Commentaire, Tag, CustomUser, Bookmark
 from .forms import ArticleForm, CustomUserCreationForm
 from django.utils.translation import gettext as _
 from django.contrib.auth import authenticate, login, logout
@@ -257,16 +257,15 @@ def dashboard_view(request):
 
     articles = Article.objects.filter(auteur=user, statut='published') \
         .annotate(nb_likes=Count('likes', distinct=True), nb_comments=Count('commentaires', distinct=True))
+    bookmarks = request.user.bookmarked_articles.all()
 
     nb_articles = articles.count()
     total_vues = articles.aggregate(total=Sum('vues'))['total'] or 0
     total_likes = articles.aggregate(total=Sum('nb_likes'))['total'] or 0
     total_comments = articles.aggregate(total=Sum('nb_comments'))['total'] or 0
 
-    bookmarks = user.bookmarks.all()
-
     brouillons = Article.objects.filter(auteur=user, statut='draft')
-
+    my_articles = Article.objects.filter(auteur=request.user, statut='published').order_by('-date_creation')
     context = {
         'user': user,
         'nb_articles': nb_articles,
@@ -275,6 +274,7 @@ def dashboard_view(request):
         'total_comments': total_comments,
         'bookmarks': bookmarks,
         'brouillons': brouillons,
+        'my_articles': my_articles
     }
 
     return render(request, 'blog/dashboard.html', context)
@@ -327,6 +327,7 @@ def like_article(request, slug):
     article = get_object_or_404(Article, slug=slug)
     article.toggle_like(request.user)
     return redirect(request.META.get('HTTP_REFERER', reverse('details_article', kwargs={'slug': slug})))
+
 
 @login_required
 def bookmark_article(request, slug):
