@@ -37,6 +37,8 @@ PROD_DB_PASSWORD=
 PROD_DB_HOST=
 PROD_DB_PORT=
 
+OPENAI_API_KEY=
+
 # Avec Mail Trap
 EMAIL_HOST=sandbox.smtp.mailtrap.io
 EMAIL_HOST_USER=
@@ -44,9 +46,6 @@ EMAIL_HOST_PASSWORD=
 EMAIL_PORT=2525
 
 ```
-
-et dans le views.py il faut mettre votre clé OPENAI_API_KEY 
-```OPENAI_API_KEY=votre_clef_api_openai_ici```
 
 ## 3. Initialiser la base de données avec des données par défaut
 Quand vous avez créer votre base de données et rentré les informations nécessaire dans le .env il faudra exécuté ces 2 commandes
