@@ -20,11 +20,11 @@ import logging
 logger = logging.getLogger('app')
 from functools import wraps
 from django.db.models import Q, Count,Sum
-from django.conf import settings
-OPENAI_API_KEY = settings.OPENAI_API_KEY
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 import json
+
+OPENAI_API_KEY = "votre_api_key"
 
 def role_required(min_role):
     roles_hierarchy = ['reader', 'author', 'editor', 'admin']
