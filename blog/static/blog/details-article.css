@@ -1,0 +1,231 @@
+/* Reset basique */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #fafafa;
+    color: #333;
+    margin: 0;
+    padding: 20px;
+    line-height: 1.6;
+    max-width: 900px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+h1 {
+    font-size: 2.4rem;
+    margin-bottom: 0.3em;
+    color: #2c3e50;
+    font-weight: 700;
+    border-bottom: 3px solid #007cba;
+    padding-bottom: 8px;
+}
+
+img {
+    max-width: 100%;
+    border-radius: 12px;
+    margin: 1.2rem 0;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    display: block;
+    object-fit: cover;
+}
+
+p {
+    font-size: 1rem;
+    margin-bottom: 1rem;
+    color: #444;
+}
+
+strong {
+    color: #555;
+}
+
+/* Boutons like/bookmark */
+form {
+    display: inline-block;
+    margin-right: 15px;
+}
+
+form button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1rem;
+    color: #007cba;
+    padding: 4px 8px;
+    border-radius: 6px;
+    transition: background-color 0.3s ease;
+    user-select: none;
+}
+
+form button:hover {
+    background-color: rgba(0, 124, 186, 0.1);
+}
+
+form span {
+    margin-left: 6px;
+    font-weight: 600;
+    color: #555;
+}
+
+/* Catégories et tags */
+.categories {
+    margin: 1.5rem 0;
+}
+
+.categories strong {
+    display: block;
+    margin-bottom: 0.6rem;
+    font-weight: 700;
+    color: #2c3e50;
+}
+
+.tag {
+    display: inline-block;
+    background-color: #007cba;
+    color: white;
+    font-size: 0.85rem;
+    padding: 4px 10px;
+    margin: 0 6px 6px 0;
+    border-radius: 20px;
+    user-select: none;
+    transition: background-color 0.3s ease;
+}
+
+.tag:hover {
+    background-color: #005f85;
+}
+
+/* Modifier / Supprimer article */
+a[href*="modifier_article"] {
+    display: inline-block;
+    margin-top: 15px;
+    font-weight: 600;
+    color: #f39c12;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+a[href*="modifier_article"]:hover {
+    color: #b27008;
+}
+
+form button[type="submit"] {
+    background-color: #e74c3c;
+    color: white;
+    padding: 8px 14px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    margin-top: 10px;
+    transition: background-color 0.3s ease;
+}
+
+form button[type="submit"]:hover {
+    background-color: #c0392b;
+}
+
+/* Lien retour */
+.back-link {
+    display: inline-block;
+    margin-top: 30px;
+    color: #007cba;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 1rem;
+    transition: color 0.3s ease;
+}
+
+.back-link:hover {
+    color: #005f85;
+}
+
+/* Commentaires */
+h2 {
+    margin-top: 40px;
+    margin-bottom: 1rem;
+    color: #2c3e50;
+    font-weight: 700;
+    border-bottom: 3px solid #007cba;
+    padding-bottom: 6px;
+}
+
+#commentaires > div {
+    border-bottom: 1px solid #ddd;
+    padding: 12px 0;
+}
+
+#commentaires p {
+    margin: 0.3rem 0;
+}
+
+#commentaires strong {
+    color: #007cba;
+}
+
+#commentaires form button {
+    background: none;
+    border: none;
+    color: #dc3545;
+    cursor: pointer;
+    font-weight: 700;
+    padding: 0;
+    margin-top: 6px;
+}
+
+#commentaires form button:hover {
+    text-decoration: underline;
+}
+
+/* Formulaire commentaire */
+form textarea {
+    width: 100%;
+    padding: 12px;
+    font-size: 1rem;
+    border: 1.8px solid #ddd;
+    border-radius: 8px;
+    resize: vertical;
+    font-family: inherit;
+    transition: border-color 0.3s ease;
+}
+
+form textarea:focus {
+    border-color: #007cba;
+    outline: none;
+}
+
+form button[type="submit"] {
+    background-color: #007cba;
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    font-size: 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-top: 15px;
+    font-weight: 700;
+    transition: background-color 0.3s ease;
+}
+
+form button[type="submit"]:hover {
+    background-color: #005f85;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+    body {
+        padding: 15px 10px;
+    }
+
+    h1 {
+        font-size: 1.8rem;
+    }
+
+    .categories strong {
+        font-size: 1rem;
+    }
+
+    form button, form span {
+        font-size: 0.9rem;
+    }
+}
