@@ -75,21 +75,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'monprojet.wsgi.application'
 
-
-# Database
-# https://docs.djangoproject.com/en/5.2/ref/settings/#databases
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'blogDB2',
-        'USER': 'postgres',
-        'PASSWORD': 'admin123',
-        'HOST': 'localhost',
-        'PORT': '5432',
-    }
-}
-
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
 
@@ -211,4 +196,31 @@ LOGGING = {
     },
 }
 
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+ENVIRONMENT = os.getenv('DJANGO_ENV', 'dev')
+
+if ENVIRONMENT == 'prod':
+    DEBUG = False
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': os.getenv("PROD_DB_NAME"),
+            'USER': os.getenv("PROD_DB_USER"),
+            'PASSWORD': os.getenv("PROD_DB_PASSWORD"),
+            'HOST': os.getenv("PROD_DB_HOST"),
+            'PORT': os.getenv("PROD_DB_PORT"),
+        }
+    }
+    ALLOWED_HOSTS = os.getenv("DJANGO_ALLOWED_HOSTS", "").split(",")
+else:
+    DEBUG = True
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': os.getenv("DEV_DB_NAME"),
+            'USER': os.getenv("DEV_DB_USER"),
+            'PASSWORD': os.getenv("DEV_DB_PASSWORD"),
+            'HOST': os.getenv("DEV_DB_HOST"),
+            'PORT': os.getenv("DEV_DB_PORT"),
+        }
+    }
+    ALLOWED_HOSTS = ['localhost', '127.0.0.1']
