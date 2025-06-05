@@ -1,3 +1,5 @@
+import os
+
 from django.contrib.auth.decorators import login_required
 import requests
 from django.shortcuts import render
@@ -24,7 +26,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 import json
 
-OPENAI_API_KEY = "votre_api_key"
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
 def role_required(min_role):
     roles_hierarchy = ['reader', 'author', 'editor', 'admin']
